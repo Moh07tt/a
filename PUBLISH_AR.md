@@ -1,4 +1,4 @@
-# نشر KGT Cyber Intelligence على الإنترنت
+# نشر محمد الصافي – Cyber Intelligence على الإنترنت
 
 ## GitHub Pages
 1. ارفع محتويات هذا المجلد إلى مستودع GitHub عام، مع وضع `index.html` في جذر المستودع.

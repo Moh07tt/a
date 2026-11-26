@@ -1,6 +1,6 @@
-# KGT Cyber Intelligence — Public Launch Package v0.2
+# Mohammed Al-Safi Cyber Intelligence — Public Launch Package v0.2
 
-A bilingual (Arabic/English), public-facing cyber threat intelligence dashboard.
+A bilingual (Arabic/English), public-facing cyber threat intelligence dashboard by Mohammed Al-Safi.
 
 ## Included in this first release
 - Responsive dark dashboard UI.

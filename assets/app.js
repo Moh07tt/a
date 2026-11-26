@@ -1,4 +1,7 @@
-const KEV_URL = "https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json";
+const KEV_URLS = [
+  { label: "CISA official GitHub mirror", url: "https://raw.githubusercontent.com/CISAGov/kev-data/develop/known_exploited_vulnerabilities.json" },
+  { label: "CISA direct feed", url: "https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json" }
+];
 const $ = (id) => document.getElementById(id);
 let kevItems = [];
 let lang = localStorage.getItem("kgt-lang") || "en";
@@ -21,7 +24,7 @@ const translations = {
     intelNetwork:"INTELLIGENCE NETWORK", sourceHealth:"Source health", openData:"Open data", exploitedCatalog:"Known exploited vulnerabilities",
     connecting:"Connecting", planned:"Planned", vulnerabilityDatabase:"National Vulnerability Database", adversaryTactics:"Adversary tactics and techniques",
     threatIndicators:"Open threat indicators", sourceNote:"Additional feeds can be enabled in future releases. API keys must be stored server-side, never in browser code.",
-    footerDisclaimer:"Independent project · Data belongs to its respective publishers.", failed:"Feed unavailable — check connection and retry.", loaded:"CISA feed updated",
+    footerDisclaimer:"Independent project · Data belongs to its respective publishers.", failed:"Both KEV data sources are unavailable — retry later.", loaded:"CISA KEV feed updated",
     noResults:"No matching records.", records:"records", cisaConnected:"Connected", cisaFailed:"Unavailable"
   },
   ar: {
@@ -41,7 +44,7 @@ const translations = {
     intelNetwork:"شبكة الاستخبارات", sourceHealth:"حالة المصادر", openData:"بيانات مفتوحة", exploitedCatalog:"الثغرات المستغلة المعروفة",
     connecting:"جارٍ الاتصال", planned:"مخطط لاحقاً", vulnerabilityDatabase:"قاعدة بيانات الثغرات الوطنية", adversaryTactics:"تكتيكات وتقنيات الخصوم",
     threatIndicators:"مؤشرات تهديد مفتوحة", sourceNote:"يمكن إضافة مصادر أخرى في الإصدارات القادمة. يجب حفظ مفاتيح API في الخادم وليس في كود المتصفح.",
-    footerDisclaimer:"مشروع مستقل · البيانات ملك للجهات الناشرة.", failed:"تعذر تحميل المصدر — تحقق من الاتصال ثم أعد المحاولة.", loaded:"تم تحديث مصدر CISA",
+    footerDisclaimer:"مشروع مستقل · البيانات ملك للجهات الناشرة.", failed:"تعذر الوصول إلى مصدري بيانات KEV — أعد المحاولة لاحقاً.", loaded:"تم تحديث بيانات CISA KEV",
     noResults:"لا توجد نتائج مطابقة.", records:"سجلات", cisaConnected:"متصل", cisaFailed:"غير متاح"
   }
 };
@@ -84,11 +87,25 @@ function updateStats(items){
 async function loadKev(){
   $("feedStatus").textContent="● Connecting";
   $("kevTable").innerHTML=`<tr><td colspan="5" class="loading-cell"><span class="spinner"></span>${t("loadingIntel")}</td></tr>`;
+  let data = null;
+  let activeSource = null;
+  const failures = [];
+  for (const source of KEV_URLS) {
+    try {
+      const res = await fetch(source.url, { cache: "no-store" });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const candidate = await res.json();
+      if (!Array.isArray(candidate.vulnerabilities)) throw new Error("Unexpected feed format");
+      data = candidate;
+      activeSource = source;
+      break;
+    } catch (err) {
+      failures.push(`${source.label}: ${err.message}`);
+      console.warn("KEV source failed:", source.url, err);
+    }
+  }
   try{
-    const res=await fetch(KEV_URL,{cache:"no-store"});
-    if(!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data=await res.json();
-    if(!Array.isArray(data.vulnerabilities)) throw new Error("Unexpected feed format");
+    if (!data) throw new Error(failures.join(" | ") || "No KEV source available");
     kevItems=data.vulnerabilities;
     kevItems.sort((a,b)=>new Date(b.dateAdded)-new Date(a.dateAdded));
     updateStats(kevItems);

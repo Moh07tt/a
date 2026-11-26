@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="KGT Cyber Intelligence — global vulnerability and cyber threat monitoring.">
+  <meta name="theme-color" content="#080f1c">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="KGT Cyber Intelligence">
+  <meta property="og:description" content="Bilingual cyber threat intelligence dashboard tracking public vulnerability advisories.">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <title>KGT Cyber Intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Arabic:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="#" aria-label="KGT Cyber Intelligence home">
+        <span class="brand-mark">K</span>
+        <span><b>KGT</b><small>CYBER INTELLIGENCE</small></span>
+      </a>
+      <div class="side-label" data-i18n="workspace">WORKSPACE</div>
+      <nav>
+        <a class="nav-link active" href="#overview"><span>◫</span><span data-i18n="overview">Overview</span></a>
+        <a class="nav-link" href="#vulnerabilities"><span>⌘</span><span data-i18n="vulnerabilities">Vulnerabilities</span></a>
+        <a class="nav-link" href="#alerts"><span>⚑</span><span data-i18n="alerts">Security alerts</span></a>
+        <a class="nav-link" href="#sources"><span>◎</span><span data-i18n="sources">Intelligence sources</span></a>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="status-card"><span class="pulse"></span><div><b data-i18n="systemOperational">System operational</b><small data-i18n="publicFeeds">Public data feeds</small></div></div>
+        <div class="side-foot">KGT INTELLIGENCE <span>v0.1.0</span></div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="mobile-brand"><span class="brand-mark">K</span><b>KGT INTELLIGENCE</b></div>
+        <div class="breadcrumb"><span data-i18n="workspace">WORKSPACE</span><i>/</i><b data-i18n="overview">Overview</b></div>
+        <div class="top-actions">
+          <span class="live-indicator"><span class="pulse"></span><span data-i18n="liveMonitoring">LIVE MONITORING</span></span>
+          <button id="langToggle" class="lang-button" type="button" aria-label="Switch language">عربي</button>
+          <a class="icon-button" href="https://github.com/" target="_blank" rel="noreferrer" aria-label="GitHub">GH</a>
+        </div>
+      </header>
+
+      <section id="overview" class="page-content">
+        <div class="hero">
+          <div>
+            <div class="eyebrow"><span class="eyebrow-dot"></span><span data-i18n="globalThreatMonitor">GLOBAL THREAT MONITOR</span></div>
+            <h1 data-i18n="dashboardTitle">Cyber threat intelligence,<br>in one place.</h1>
+            <p data-i18n="dashboardSubtitle">Monitor exploited vulnerabilities and security advisories from trusted public sources.</p>
+            <div class="hero-meta"><span>● <span data-i18n="publicIntel">PUBLIC INTELLIGENCE</span></span><span>·</span><span id="lastUpdated" data-i18n="waitingForData">Waiting for data…</span></div>
+          </div>
+          <div class="hero-orbit" aria-hidden="true"><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="orbit-core"><span> KGT </span><small>INTEL</small></div><i class="orbit-node node-a"></i><i class="orbit-node node-b"></i><i class="orbit-node node-c"></i></div>
+        </div>
+
+        <div class="section-heading">
+          <div><span class="eyebrow" data-i18n="threatSnapshot">THREAT SNAPSHOT</span><h2 data-i18n="securityOverview">Security overview</h2></div>
+          <button id="refreshBtn" class="outline-button" type="button"><span class="refresh-icon">↻</span><span data-i18n="refreshData">Refresh data</span></button>
+        </div>
+
+        <div class="stats-grid">
+          <article class="stat-card"><div class="stat-top"><span data-i18n="knownExploited">Known exploited CVEs</span><span class="stat-icon red">!</span></div><strong id="kevCount">—</strong><small data-i18n="cisaCatalog">CISA KEV catalog</small></article>
+          <article class="stat-card"><div class="stat-top"><span data-i18n="recentAdditions">Recent additions</span><span class="stat-icon blue">↗</span></div><strong id="recentCount">—</strong><small data-i18n="last30Days">Added in the last 30 days</small></article>
+          <article class="stat-card"><div class="stat-top"><span data-i18n="criticalItems">Critical severity</span><span class="stat-icon orange">◆</span></div><strong id="criticalCount">—</strong><small data-i18n="fromLoadedCves">From loaded CVE records</small></article>
+          <article class="stat-card"><div class="stat-top"><span data-i18n="dataSources">Connected sources</span><span class="stat-icon green">◎</span></div><strong id="sourceCount">2</strong><small data-i18n="publicSources">Public sources configured</small></article>
+        </div>
+
+        <section id="vulnerabilities" class="panel">
+          <div class="panel-heading">
+            <div><span class="eyebrow" data-i18n="exposureWatch">EXPOSURE WATCH</span><h2 data-i18n="exploitedVulnerabilities">Known exploited vulnerabilities</h2><p data-i18n="exploitedDescription">Vulnerabilities listed by CISA as exploited in the wild.</p></div>
+            <a class="text-link" href="https://www.cisa.gov/known-exploited-vulnerabilities-catalog" target="_blank" rel="noreferrer" data-i18n="openCisa">Open CISA ↗</a>
+          </div>
+          <div class="table-tools"><label class="search-box"><span>⌕</span><input id="searchInput" type="search" placeholder="Search CVE, vendor or product…" data-i18n-placeholder="searchPlaceholder"></label><select id="vendorFilter" aria-label="Filter vendor"><option value="" data-i18n="allVendors">All vendors</option></select><span class="result-count" id="resultCount">—</span></div>
+          <div class="table-wrap"><table><thead><tr><th data-i18n="cveId">CVE ID</th><th data-i18n="vendorProduct">VENDOR / PRODUCT</th><th data-i18n="vulnerabilityName">VULNERABILITY</th><th data-i18n="dateAdded">DATE ADDED</th><th data-i18n="dueDate">DUE DATE</th></tr></thead><tbody id="kevTable"><tr><td colspan="5" class="loading-cell"><span class="spinner"></span><span data-i18n="loadingIntel">Loading intelligence feed…</span></td></tr></tbody></table></div>
+          <div class="panel-footer"><span id="tableFootnote" data-i18n="cisaFootnote">Source: CISA Known Exploited Vulnerabilities catalog.</span><span id="feedStatus" class="feed-status">● Connecting</span></div>
+        </section>
+
+        <div class="lower-grid">
+          <section id="alerts" class="panel compact-panel">
+            <div class="panel-heading"><div><span class="eyebrow" data-i18n="priorityFeed">PRIORITY FEED</span><h2 data-i18n="securityAlerts">Security alerts</h2></div><span class="pill neutral" data-i18n="verifiedSource">Verified source</span></div>
+            <div class="alert-item"><span class="alert-symbol red">!</span><div><b data-i18n="cisaAlertTitle">CISA exploited vulnerability catalog</b><p data-i18n="cisaAlertDesc">Prioritize remediation for vulnerabilities known to be exploited.</p><a href="https://www.cisa.gov/known-exploited-vulnerabilities-catalog" target="_blank" rel="noreferrer">CISA KEV ↗</a></div></div>
+            <div class="alert-item"><span class="alert-symbol blue">i</span><div><b data-i18n="nvdAlertTitle">NVD vulnerability intelligence</b><p data-i18n="nvdAlertDesc">Use CVSS and CVE records to assess technical severity.</p><a href="https://nvd.nist.gov/" target="_blank" rel="noreferrer">NVD ↗</a></div></div>
+            <div class="notice"><b data-i18n="scopeNotice">Scope note</b><span data-i18n="scopeText">This starter dashboard displays public vulnerability intelligence. It does not identify live victims, verify active intrusions, or execute scans.</span></div>
+          </section>
+
+          <section id="sources" class="panel compact-panel">
+            <div class="panel-heading"><div><span class="eyebrow" data-i18n="intelNetwork">INTELLIGENCE NETWORK</span><h2 data-i18n="sourceHealth">Source health</h2></div><span class="pill success" data-i18n="openData">Open data</span></div>
+            <div class="source-row"><span class="source-logo cisa">C</span><div><b>CISA KEV</b><small data-i18n="exploitedCatalog">Known exploited vulnerabilities</small></div><span class="source-state" id="cisaState"><i></i><span data-i18n="connecting">Connecting</span></span></div>
+            <div class="source-row"><span class="source-logo nvd">N</span><div><b>NIST NVD</b><small data-i18n="vulnerabilityDatabase">National Vulnerability Database</small></div><span class="source-state"><i class="muted-dot"></i><span data-i18n="planned">Planned</span></span></div>
+            <div class="source-row"><span class="source-logo mitre">M</span><div><b>MITRE ATT&CK</b><small data-i18n="adversaryTactics">Adversary tactics and techniques</small></div><span class="source-state"><i class="muted-dot"></i><span data-i18n="planned">Planned</span></span></div>
+            <div class="source-row"><span class="source-logo otx">O</span><div><b>AlienVault OTX</b><small data-i18n="threatIndicators">Open threat indicators</small></div><span class="source-state"><i class="muted-dot"></i><span data-i18n="planned">Planned</span></span></div>
+            <div class="source-note" data-i18n="sourceNote">Additional feeds can be enabled in future releases. API keys must be stored server-side, never in browser code.</div>
+          </section>
+        </div>
+        <footer><span>© 2026 KGT Cyber Intelligence</span><span data-i18n="footerDisclaimer">Independent project · Data belongs to its respective publishers.</span></footer>
+      </section>
+    </main>
+  </div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="assets/app.js"></script>
+</body>
+</html>

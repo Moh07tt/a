@@ -289,7 +289,7 @@ function classifyAdvisory(item){
  else if(/denial.of.service|\bdos\b|resource exhaustion/i.test(raw))category="catDos";
  else if(/information disclosure|data exposure|sensitive information/i.test(raw))category="catInfo";
  else if(/buffer overflow|memory corruption|use.after.free|heap.based|stack.based/i.test(raw))category="catMemory";
- const scores=[...raw.matchAll(/CVSS(?:[^0-9]{0,35})(10(?:\.0)?|[0-9]\.[0-9])/gi)].map(m=>Number(m[1])).filter(n=>n>=0&&n<=10);
+ const scores=[...raw.matchAll(/CVSS.{0,60}?(10(?:\.0)?|[0-9]\.[0-9])/gi)].map(m=>Number(m[1])).filter(n=>n>=0&&n<=10);
  const score=scores.length?Math.max(...scores):null;
  const severity=score===null?null:score>=9?"sevCritical":score>=7?"sevHigh":score>=4?"sevMedium":"sevLow";
  const ransomware=matches.some(v=>v.knownRansomwareCampaignUse==="Known")||/ransomware|برمجيات الفدية/i.test(raw);

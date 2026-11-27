@@ -43,7 +43,7 @@
         <div class="mobile-brand"><img class="brand-photo" src="assets/mohammed-al-safi.webp" alt="صورة محمد الصافي"><b>محمد الصافي</b></div>
         <div class="breadcrumb"><span data-i18n="workspace">WORKSPACE</span><i>/</i><b data-i18n="overview">Overview</b></div>
         <div class="top-actions">
-          <span class="live-indicator"><span class="pulse"></span><span data-i18n="liveMonitoring">LIVE MONITORING</span></span>
+          <button id="liveRefreshBtn" class="live-indicator" type="button" aria-label="Refresh live public intelligence feed" title="Refresh public intelligence feed"><span class="pulse"></span><span data-i18n="liveMonitoring">LIVE MONITORING</span></button>
           <button id="langToggle" class="lang-button" type="button" aria-label="Switch language">عربي</button>
           <a class="icon-button" href="https://github.com/" target="_blank" rel="noreferrer" aria-label="GitHub">GH</a>
         </div>
@@ -127,7 +127,7 @@
     </div>
   </section>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
-  <script src="assets/app.js?v=6"></script>
+  <script src="assets/app.js?v=7"></script>
   <script data-goatcounter="https://mohammedalsafi.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
   <script>
     (function () {

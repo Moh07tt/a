@@ -397,8 +397,60 @@ $("cveQuickOpen").addEventListener("click",()=>{
 $("cveQuickSearch").addEventListener("keydown",e=>{if(e.key==="Enter")$("cveQuickOpen").click();});
 $("openKevTab").addEventListener("click",()=>setActiveTab("vulnerabilities"));
 
+
+let iraqAdvisoryItems=[];
+function classifyIraqAdvisory(item){
+ const text=String(item.title||"");
+ const cves=[...new Set(text.match(/CVE-\\d{4}-\\d{4,}/gi)||[])];
+ const critical=/حرج|critical|actively exploited|استغلال نشط|remote code execution|تنفيذ تعليمات برمجية عن بُعد/i.test(text);
+ const high=critical||/مرتفع|high|استغلال فعلي|actively exploited|authentication bypass|تجاوز المصادقة/i.test(text);
+ return {cves,level:critical?"critical":high?"high":"advisory"};
+}
+function renderIraqAdvisories(){
+ const list=$("iraqAdvisoryList");if(!list)return;
+ const q=($("iraqAdvisorySearch")?.value||"").trim().toLowerCase();
+ const filter=$("iraqAdvisoryFilter")?.value||"all";
+ const rows=iraqAdvisoryItems.map(item=>({item,intel:classifyIraqAdvisory(item)})).filter(({item,intel})=>{
+  const hay=[item.title,item.date].join(" ").toLowerCase();
+  if(q&&!hay.includes(q))return false;
+  if(filter==="critical"&&intel.level!=="critical")return false;
+  if(filter==="high"&&!["critical","high"].includes(intel.level))return false;
+  if(filter==="cve"&&!intel.cves.length)return false;
+  return true;
+ });
+ const stats=$("iraqAdvisoryStats");
+ if(stats)stats.innerHTML='<div><b>'+iraqAdvisoryItems.length+'</b><span>إشعارات منشورة / Published</span></div><div><b>'+iraqAdvisoryItems.filter(x=>classifyIraqAdvisory(x).cves.length).length+'</b><span>تتضمن CVE / CVE references</span></div><div><b>'+iraqAdvisoryItems.filter(x=>classifyIraqAdvisory(x).level==="critical").length+'</b><span>مؤشرات حرجة / Critical signals</span></div>';
+ if(!rows.length){list.innerHTML='<div class="notice">لا توجد نتائج مطابقة / No matching advisories.</div>';return;}
+ list.innerHTML=rows.map(({item,intel})=>{
+  const badge=intel.level==="critical"?"حرج / Critical":intel.level==="high"?"مرتفع / High":"إشعار / Advisory";
+  const cves=intel.cves.map(id=>'<a href="https://nvd.nist.gov/vuln/detail/'+encodeURIComponent(id)+'" target="_blank" rel="noopener noreferrer">'+esc(id)+'</a>').join("");
+  const url=/^https:\\/\\//.test(item.url||"")?item.url:"https://ncc.gov.iq/advisories.html";
+  return '<article class="iraq-advisory-card"><div class="iraq-advisory-meta"><span class="iraq-level iraq-'+intel.level+'">'+esc(badge)+'</span><time>'+esc(item.date||"التاريخ غير محدد / Date unavailable")+'</time></div><b>'+esc(item.title)+'</b>'+(cves?'<div class="iraq-cves">'+cves+'</div>':"")+'<a class="iraq-read-link" href="'+esc(url)+'" target="_blank" rel="noopener noreferrer">قراءة الإشعار الأصلي / Read official notice ↗</a></article>';
+ }).join("");
+}
+async function loadIraqAdvisories(){
+ const state=$("iraqAdvisoryState"),updated=$("iraqAdvisoryUpdated"),list=$("iraqAdvisoryList");if(!list)return;
+ try{
+  const response=await fetch("./data/iraq-watch.json?ts="+Date.now(),{cache:"no-store"});
+  if(!response.ok)throw new Error("HTTP "+response.status);
+  const payload=await response.json();
+  iraqAdvisoryItems=Array.isArray(payload.items)?payload.items:[];
+  renderIraqAdvisories();
+  if(state)state.textContent=iraqAdvisoryItems.length?"متصل / Connected":"لا توجد بيانات / No records";
+  if(updated)updated.textContent=payload.generatedAt?new Date(payload.generatedAt).toLocaleString(lang==="ar"?"ar-IQ":"en-US"):"";
+  if(!iraqAdvisoryItems.length)list.innerHTML='<div class="notice">لم يتم استخراج إشعارات في آخر تحديث. افتح صفحة المركز الرسمية للتحقق يدوياً. / No advisories were parsed in the latest update; check the official source.</div>';
+ }catch(error){
+  console.warn("Iraq advisories unavailable",error);
+  if(state)state.textContent="غير متاح / Unavailable";
+  list.innerHTML='<div class="notice">تعذر تحميل الموجز العراقي حالياً. <a href="https://ncc.gov.iq/advisories.html" target="_blank" rel="noopener noreferrer">افتح المصدر الرسمي ↗</a></div>';
+ }
+}
+$("iraqAdvisorySearch")?.addEventListener("input",renderIraqAdvisories);
+$("iraqAdvisoryFilter")?.addEventListener("change",renderIraqAdvisories);
+
 applyLanguage();
 loadGlobalThreats();
+loadIraqAdvisories();
 const initialTab=location.hash.slice(1);
 setActiveTab(["overview","vulnerabilities","alerts","global-threats","cve-intelligence","sources","iraq-watch","methodology"].includes(initialTab)?initialTab:"overview");
 loadKev();

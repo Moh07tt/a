@@ -1,4 +1,5 @@
 const KEV_URLS = [
+  { label: "GitHub Pages local snapshot", url: "./data/kev.json" },
   { label: "jsDelivr CISA mirror", url: "https://cdn.jsdelivr.net/gh/CISAGov/kev-data@develop/known_exploited_vulnerabilities.json" },
   { label: "GitHub CISA mirror", url: "https://raw.githubusercontent.com/CISAGov/kev-data/develop/known_exploited_vulnerabilities.json" },
   { label: "CISA official feed", url: "https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json" }

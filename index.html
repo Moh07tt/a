@@ -151,7 +151,58 @@
   </section>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-  <script src="assets/app.js?v=30"></script>
+  <script src="assets/app.js?v=31"></script>
+<script>
+/* Independent fail-safe for the three Overview intelligence cards.
+   This runs even if the main dashboard script encounters a runtime error. */
+(function(){
+  const $id=id=>document.getElementById(id);
+  const timeoutFetch=async(url,ms=12000)=>{
+    const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),ms);
+    try{const response=await fetch(url,{cache:"no-store",signal:controller.signal});if(!response.ok)throw new Error("HTTP "+response.status);return await response.json();}
+    finally{clearTimeout(timer);}
+  };
+  const clear=node=>{if(node)node.replaceChildren();};
+  const notice=(node,message)=>{if(!node)return;clear(node);const p=document.createElement("div");p.className="notice";p.textContent=message;node.appendChild(p);};
+  const addRow=(node,title,meta,url,badge)=>{
+    const a=document.createElement("a");a.className="overview-mini-item";a.href=url;a.target="_blank";a.rel="noopener noreferrer";
+    const main=document.createElement("span");main.className="overview-mini-main";
+    const b=document.createElement("b");b.textContent=title;
+    const small=document.createElement("small");small.textContent=meta||"";
+    main.append(b,small);
+    const tag=document.createElement("span");tag.className="overview-mini-badge priority-medium";tag.textContent=badge;
+    a.append(main,tag);node.appendChild(a);
+  };
+  async function run(){
+    const threats=$id("overviewTopThreats"),kev=$id("overviewTopKeV"),iraq=$id("overviewIraqUpdates");
+    try{
+      const p=await timeoutFetch("./data/global-threats.json?fallback="+Date.now());
+      const items=Array.isArray(p.items)?p.items:[];
+      clear(threats);
+      items.slice(0,5).forEach(x=>addRow(threats,x.title||"Untitled advisory",(x.published||"")+" · CISA",String(x.url||"").startsWith("https://")?x.url:"https://www.cisa.gov/news-events/cybersecurity-advisories","CISA"));
+      if(!items.length)notice(threats,"لا توجد تهديدات منشورة في ملف البيانات حالياً.");
+    }catch(e){notice(threats,"تعذر تحميل التهديدات العالمية. تحقق من الاتصال ثم أعد المحاولة.");}
+    try{
+      let payload=null;
+      for(const url of ["./data/kev.json?fallback="+Date.now(),"https://cdn.jsdelivr.net/gh/CISAGov/kev-data@develop/known_exploited_vulnerabilities.json","https://raw.githubusercontent.com/CISAGov/kev-data/develop/known_exploited_vulnerabilities.json","https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json"]){
+        try{const x=await timeoutFetch(url);if(Array.isArray(x.vulnerabilities)&&x.vulnerabilities.length){payload=x;break;}}catch(e){}
+      }
+      const items=payload?.vulnerabilities||[];
+      clear(kev);
+      items.slice().sort((a,b)=>String(b.dateAdded||"").localeCompare(String(a.dateAdded||""))).slice(0,5).forEach(x=>addRow(kev,(x.cveID||"CVE")+" · "+(x.vulnerabilityName||"Vulnerability"),[x.vendorProject,x.product,x.dateAdded].filter(Boolean).join(" · "),"https://nvd.nist.gov/vuln/detail/"+encodeURIComponent(x.cveID||""),"KEV"));
+      if(!items.length)notice(kev,"تعذر الوصول إلى كتالوج CISA KEV حالياً.");
+    }catch(e){notice(kev,"تعذر تحميل كتالوج الثغرات. تحقق من الاتصال ثم أعد المحاولة.");}
+    try{
+      const p=await timeoutFetch("./data/iraq-watch.json?fallback="+Date.now());
+      const items=Array.isArray(p.items)?p.items:[];
+      clear(iraq);
+      items.slice(0,5).forEach(x=>addRow(iraq,x.title||"إشعار عراقي",x.date||"NCC Iraq",String(x.url||"").startsWith("https://")?x.url:"https://ncc.gov.iq/advisories.html","NCC"));
+      if(!items.length)notice(iraq,"لا توجد إشعارات عراقية في آخر نسخة منشورة.");
+    }catch(e){notice(iraq,"تعذر تحميل الإشعارات العراقية. افتح المصدر الرسمي للتحقق.");}
+  }
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",run,{once:true});else run();
+})();
+</script>
   <script data-goatcounter="https://mohammedalsafi.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
   <script>
     (function () {

@@ -113,7 +113,10 @@ async function showCveDetails(id) {
     const score=cvss?.baseScore ?? "—";
     const weaknesses=(cve.weaknesses||[]).flatMap(w=>w.description||[]).map(w=>w.value).filter(Boolean);
     const refs=(cve.references||[]).filter(r=>/^https?:\\/\\//i.test(r.url||"")).slice(0,8);
-    const cpeItems=[];\n    const collectCpes=node=>{if(!node||typeof node!=="object")return;if(Array.isArray(node))return node.forEach(collectCpes);if(Array.isArray(node.cpeMatch))node.cpeMatch.forEach(m=>{if(m.vulnerable&&m.criteria)cpeItems.push(m.criteria);});Object.values(node).forEach(value=>{if(value&&typeof value==="object")collectCpes(value);});};\n    collectCpes(cve.configurations);\n    const affected=[...new Set(cpeItems)].slice(0,12);
+    const cpeItems=[];
+    const collectCpes=node=>{if(!node||typeof node!=="object")return;if(Array.isArray(node))return node.forEach(collectCpes);if(Array.isArray(node.cpeMatch))node.cpeMatch.forEach(m=>{if(m.vulnerable&&m.criteria)cpeItems.push(m.criteria);});Object.values(node).forEach(value=>{if(value&&typeof value==="object")collectCpes(value);});};
+    collectCpes(cve.configurations);
+    const affected=[...new Set(cpeItems)].slice(0,12);
     const severityClass=["critical","high","medium","low"].includes(String(severity).toLowerCase())?String(severity).toLowerCase():"none";
     $("cveDetailBody").innerHTML=`
       <div class="cve-metrics">

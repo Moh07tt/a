@@ -123,7 +123,7 @@ function renderTable(){
 }
 
 function setActiveTab(name){
-  const allowed=["overview","vulnerabilities","alerts","global-threats","cve-intelligence","sources","iraq-watch","methodology"];
+  const allowed=["overview","vulnerabilities","alerts","global-threats","cve-intelligence","ioc-lab","sources","iraq-watch","methodology"];
   const active=allowed.includes(name)?name:"overview";
   document.querySelectorAll("[data-tab-panel]").forEach(panel=>{
     panel.classList.toggle("active",panel.dataset.tabPanel===active);
@@ -451,12 +451,13 @@ $("iraqAdvisoryFilter")?.addEventListener("change",renderIraqAdvisories);
 
 function classifyIoc(value){
  const v=String(value||"").trim();
- const ipv4=/^(?:(?:25[0-5]|2[0-4]\\d|1?\\d?\\d)\\.){3}(?:25[0-5]|2[0-4]\\d|1?\\d?\\d)$/;
- if(ipv4.test(v))return {type:"ip",value:v};
- if(/^https?:\\/\\//i.test(v)){
+ const parts=v.split(".");
+ const isIp=parts.length===4&&parts.every(part=>/^\\d{1,3}$/.test(part)&&Number(part)>=0&&Number(part)<=255);
+ if(isIp)return {type:"ip",value:v};
+ if(v.toLowerCase().startsWith("http://")||v.toLowerCase().startsWith("https://")){
   try{const u=new URL(v);if(!u.hostname||u.username||u.password)throw new Error("invalid");return {type:"url",value:v,host:u.hostname};}catch{return null;}
  }
- const domain=/^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\.)+[a-z]{2,63}$/i;
+ const domain=/^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?[.])+[a-z]{2,63}$/i;
  if(domain.test(v))return {type:"domain",value:v};
  return null;
 }

@@ -152,3 +152,15 @@ html[dir="rtl"] .cve-reference-list{padding-left:0;padding-right:18px}
 .intel-enrichment a{display:inline-block;margin:2px 7px 2px 0;color:#8fc4ff;font-size:10px;text-decoration:none}
 .intel-products span{font-size:10px;color:#c0cede;line-height:1.5}
 @media(max-width:720px){.intel-stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.intel-stat{padding:9px}.intel-stat b{font-size:18px}}
+
+/* Intelligence platform expansion */
+.intel-control-bar{display:grid;grid-template-columns:minmax(160px,1.5fr) minmax(145px,1fr) auto;gap:8px;margin:15px 0 9px;align-items:center}
+.intel-control-bar .search-box{max-width:none;width:100%}
+.intel-control-bar select{min-width:0;background:#0c1725;border:1px solid #2a3a50;border-radius:7px;color:#b8c8dc;padding:10px;font:inherit;font-size:10px}
+.intel-action-row{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 14px}
+.intel-action-row .outline-button,.intel-control-bar .outline-button{font-size:10px;padding:9px 11px}
+.priority-critical{background:#59232f;color:#ffb1bd;border-color:#87404e}.priority-high{background:#59391f;color:#ffd09a;border-color:#80532d}.priority-medium{background:#4b4523;color:#f3d58b;border-color:#6f642d}.priority-low{background:#1e473d;color:#8ce1c4;border-color:#2b6656}
+.intel-why{padding:8px 9px;margin:8px 0;background:#0a1523;border:1px solid #22364c;border-radius:6px}.intel-why small,.intel-why span{display:block}.intel-why small{font-size:9px;color:#8fa8c4;margin-bottom:4px}.intel-why span{font-size:10px;line-height:1.6;color:#bdcadd}
+.source-map-wrap{margin:16px 0;padding:12px;border:1px solid #26394f;background:#0d1a29;border-radius:9px}.map-heading b,.map-heading small{display:block}.map-heading b{font-size:12px}.map-heading small{font-size:9px;line-height:1.6;color:#8fa2b9;margin:5px 0 10px}#sourceCoverageMap{height:260px;border-radius:7px;overflow:hidden;background:#13243a}.leaflet-popup-content{font:12px Arial,sans-serif}
+@media(max-width:720px){.intel-control-bar{grid-template-columns:1fr}.intel-control-bar .outline-button{width:100%}#sourceCoverageMap{height:220px}.intel-action-row>*{flex:1}.intel-action-row .outline-button{font-size:9px;padding:8px 7px}}
+@media print{.sidebar,.topbar,.section-tabs,.intel-control-bar,.intel-action-row,.source-map-wrap{display:none!important}}

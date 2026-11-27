@@ -52,7 +52,13 @@ def main():
         with urllib.request.urlopen(req, timeout=25) as response:
             html = response.read().decode("utf-8", errors="replace")
         parser = Parser(); parser.feed(html)
-        payload = {"source":SOURCE,"sourceName":"National Cybersecurity Center of Iraq","generatedAt":datetime.now(timezone.utc).isoformat(),"items":parser.items[:60],"note":"Published official advisories; not proof of a confirmed incident in Iraq."}
+        extracted = parser.items[:60]
+        if not extracted and OUT.exists():
+            payload = json.loads(OUT.read_text(encoding="utf-8"))
+            payload["lastAttemptAt"] = datetime.now(timezone.utc).isoformat()
+            payload["parserNote"] = "The official page was reachable, but no matching PDF-linked advisory cards were detected."
+        else:
+            payload = {"source":SOURCE,"sourceName":"National Cybersecurity Center of Iraq","generatedAt":datetime.now(timezone.utc).isoformat(),"items":extracted,"note":"Published official advisories; not proof of a confirmed incident in Iraq."}
     except Exception as exc:
         print(f"NCC fetch failed: {exc}")
         payload = json.loads(OUT.read_text(encoding="utf-8")) if OUT.exists() else {"source":SOURCE,"sourceName":"National Cybersecurity Center of Iraq","items":[]}

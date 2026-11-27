@@ -1,6 +1,7 @@
 const KEV_URLS = [
-  { label: "CISA official GitHub mirror", url: "https://raw.githubusercontent.com/CISAGov/kev-data/develop/known_exploited_vulnerabilities.json" },
-  { label: "CISA direct feed", url: "https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json" }
+  { label: "jsDelivr CISA mirror", url: "https://cdn.jsdelivr.net/gh/CISAGov/kev-data@develop/known_exploited_vulnerabilities.json" },
+  { label: "GitHub CISA mirror", url: "https://raw.githubusercontent.com/CISAGov/kev-data/develop/known_exploited_vulnerabilities.json" },
+  { label: "CISA official feed", url: "https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json" }
 ];
 const $ = (id) => document.getElementById(id);
 let kevItems = [];
@@ -145,27 +146,32 @@ function updateStats(items){
   $("sourceCount").textContent="4";
 }
 async function loadKev(){
+  const button=$("liveRefreshBtn");
+  if(button){button.disabled=true;button.setAttribute("aria-busy","true");}
   $("feedStatus").textContent="● Connecting";
+  $("cisaState").innerHTML=`<i></i><span>${t("connecting")}</span>`;
   $("kevTable").innerHTML=`<tr><td colspan="7" class="loading-cell"><span class="spinner"></span>${t("loadingIntel")}</td></tr>`;
-  let data = null;
-  let activeSource = null;
-  const failures = [];
-  for (const source of KEV_URLS) {
-    try {
-      const res = await fetch(source.url, { cache: "no-store" });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const candidate = await res.json();
-      if (!Array.isArray(candidate.vulnerabilities)) throw new Error("Unexpected feed format");
-      data = candidate;
-      activeSource = source;
-      break;
-    } catch (err) {
-      failures.push(`${source.label}: ${err.message}`);
-      console.warn("KEV source failed:", source.url, err);
-    }
-  }
+  let data=null;
+  const failures=[];
   try{
-    if (!data) throw new Error(failures.join(" | ") || "No KEV source available");
+    for(const source of KEV_URLS){
+      const controller=new AbortController();
+      const timeout=setTimeout(()=>controller.abort(),12000);
+      try{
+        const res=await fetch(source.url,{cache:"no-store",headers:{Accept:"application/json"},signal:controller.signal});
+        if(!res.ok) throw new Error(`HTTP ${res.status}`);
+        const candidate=await res.json();
+        if(!candidate||!Array.isArray(candidate.vulnerabilities)||!candidate.vulnerabilities.length) throw new Error("Invalid or empty KEV feed");
+        data=candidate;
+        break;
+      }catch(err){
+        failures.push(`${source.label}: ${err.name==="AbortError"?"timeout":err.message}`);
+        console.warn("KEV source failed:",source.url,err);
+      }finally{
+        clearTimeout(timeout);
+      }
+    }
+    if(!data) throw new Error(failures.join(" | ")||"No KEV source available");
     kevItems=data.vulnerabilities;
     kevItems.sort((a,b)=>new Date(b.dateAdded)-new Date(a.dateAdded));
     updateStats(kevItems);
@@ -178,12 +184,14 @@ async function loadKev(){
     $("cisaState").innerHTML=`<i></i><span>${t("cisaConnected")}</span>`;
     renderTable();
   }catch(err){
-    console.error(err);
+    console.error("KEV feed load failed:",err);
     $("feedStatus").textContent="● Unavailable";
     $("cisaState").innerHTML=`<i class="muted-dot"></i><span>${t("cisaFailed")}</span>`;
-    $("kevTable").innerHTML=`<tr><td colspan="7" class="loading-cell">${t("failed")}</td></tr>`;
+    $("kevTable").innerHTML=`<tr><td colspan="7" class="loading-cell">${t("failed")}<br><small>${esc(err.message)}</small></td></tr>`;
     $("lastUpdated").textContent=t("failed");
     showToast(t("failed"));
+  }finally{
+    if(button){button.disabled=false;button.removeAttribute("aria-busy");}
   }
 }
 $("langToggle").addEventListener("click",()=>{lang=lang==="en"?"ar":"en";localStorage.setItem("kgt-lang",lang);applyLanguage();});

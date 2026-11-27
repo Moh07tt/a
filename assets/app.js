@@ -154,6 +154,36 @@ function metricFor(cve) {
   const m=cve.metrics||{};
   return (m.cvssMetricV40||[])[0] || (m.cvssMetricV31||[])[0] || (m.cvssMetricV30||[])[0] || (m.cvssMetricV2||[])[0] || null;
 }
+function getRemediationGuidance({score,severity,weaknesses=[],description=""}){
+ const text=(weaknesses.join(" ")+" "+description).toLowerCase(),steps=[];
+ if(Number(score)>=9||String(severity).toLowerCase()==="critical")steps.push(lang==="ar"?"أعطِ هذه الثغرة أولوية عاجلة في إدارة التصحيحات.":"Prioritize this vulnerability urgently in patch management.");
+ else if(Number(score)>=7||String(severity).toLowerCase()==="high")steps.push(lang==="ar"?"خطط لمعالجة قريبة، وابدأ بالأنظمة المكشوفة للإنترنت.":"Plan near-term remediation, starting with internet-exposed systems.");
+ else steps.push(lang==="ar"?"قيّم أثر الثغرة على الأصول المتأثرة وحدد موعد معالجة مناسباً.":"Assess exposure on affected assets and set a proportionate remediation deadline.");
+ if(/remote|network|unauthenticated|network attack vector/.test(text))steps.push(lang==="ar"?"قلّل التعرض الشبكي وقيّد الوصول إلى الخدمات المتأثرة حتى تطبيق الإصلاح.":"Reduce network exposure and restrict access to affected services until patched.");
+ if(/privilege|authentication|access control|credential/.test(text))steps.push(lang==="ar"?"راجع الصلاحيات والحسابات وفعّل المصادقة متعددة العوامل حيثما أمكن.":"Review privileges and accounts; enable multi-factor authentication where available.");
+ if(/injection|cross.site|script|xss|sql/.test(text))steps.push(lang==="ar"?"راجع مدخلات التطبيق والسجلات وطبّق وسائل الحماية الموصى بها من المورّد.":"Review application inputs and logs; apply vendor-recommended application protections.");
+ steps.push(lang==="ar"?"تحقق من المنتج والإصدار المتأثرين عبر نشرة المورّد، وثبّت الإصدار المصحح أو طبّق التخفيف الرسمي.":"Confirm affected products and versions in the vendor advisory, then install the fixed release or official mitigation.");
+ steps.push(lang==="ar"?"تحقق من نجاح التحديث وراقب السجلات ومؤشرات الاستغلال واحتفظ بنسخة احتياطية.":"Verify the fix, monitor logs and exploitation indicators, and retain a backup.");
+ return [...new Set(steps)].slice(0,5);
+}
+function getSavedIntel(){try{const x=JSON.parse(localStorage.getItem("msa-saved-intel")||"[]");return Array.isArray(x)?x:[];}catch{return [];}}
+function saveIntelItem(item){
+ const key=item.type+":"+item.id,next=getSavedIntel().filter(x=>x.type+":"+x.id!==key);
+ next.unshift({...item,savedAt:new Date().toISOString()});localStorage.setItem("msa-saved-intel",JSON.stringify(next.slice(0,100)));
+ renderSavedIntel();showToast(lang==="ar"?"تم حفظ العنصر":"Saved to watchlist");
+}
+function renderSavedIntel(){
+ const node=$("overviewSavedIntel");if(!node)return;const items=getSavedIntel();
+ node.innerHTML=items.length?items.map(x=>'<div class="saved-intel-item"><div><span class="saved-intel-type">'+esc(x.type)+'</span><b>'+esc(x.title)+'</b><small>'+esc(x.savedAt?new Date(x.savedAt).toLocaleDateString():"")+'</small></div><div class="saved-intel-actions">'+(x.url?'<a href="'+esc(x.url)+'" target="_blank" rel="noopener noreferrer">↗</a>':"")+'<button type="button" data-remove-saved="'+esc(x.type)+'" data-remove-id="'+esc(x.id)+'">×</button></div></div>').join(""):'<div class="notice">'+(lang==="ar"?"لا توجد عناصر محفوظة بعد.":"No saved items yet.")+'</div>';
+}
+function bindSavedIntel(){
+ document.addEventListener("click",event=>{
+  const remove=event.target.closest("[data-remove-saved]");if(remove){const key=remove.dataset.removeSaved+":"+remove.dataset.removeId;localStorage.setItem("msa-saved-intel",JSON.stringify(getSavedIntel().filter(x=>x.type+":"+x.id!==key)));renderSavedIntel();return;}
+  const cve=event.target.closest("[data-save-cve]");if(cve){const id=cve.dataset.saveCve;saveIntelItem({type:"CVE",id,title:id,url:"https://nvd.nist.gov/vuln/detail/"+encodeURIComponent(id)});cve.textContent=lang==="ar"?"تم الحفظ ✓":"Saved ✓";return;}
+  const threat=event.target.closest("[data-save-threat]");if(threat){const id=threat.dataset.saveThreat;saveIntelItem({type:"Threat",id,title:threat.dataset.title||id,url:threat.dataset.url});threat.textContent=lang==="ar"?"تم الحفظ ✓":"Saved ✓";}
+ });
+}
+
 function openCveModal() {
   $("cveModal").classList.add("open");
   $("cveModal").setAttribute("aria-hidden","false");
@@ -197,7 +227,8 @@ async function showCveDetails(id) {
       <section class="cve-detail-section"><h3>${esc(t("weaknesses"))}</h3><p>${weaknesses.length?weaknesses.map(esc).join(" · "):"—"}</p></section>
       <section class="cve-detail-section"><h3>${esc(t("affectedProducts"))}</h3><p>${affected.length?affected.map(esc).join("<br>"):"See NVD record for affected configurations."}</p></section>
       <section class="cve-detail-section"><h3>${esc(t("references"))}</h3>${refs.length?'<ul class="cve-reference-list">'+refs.map(r=>'<li><a href="'+esc(r.url)+'" target="_blank" rel="noopener noreferrer">'+esc(r.url)+'</a></li>').join("")+'</ul>':'<p>'+esc(t("noReferences"))+'</p>'}</section>
-      <div class="cve-detail-actions"><a class="outline-button" href="https://nvd.nist.gov/vuln/detail/${encodeURIComponent(id)}" target="_blank" rel="noopener noreferrer">${esc(t("openNvd"))}</a><a class="outline-button" href="https://www.cve.org/CVERecord?id=${encodeURIComponent(id)}" target="_blank" rel="noopener noreferrer">${esc(t("openCve"))}</a></div>
+      <section class="cve-detail-section remediation-section"><h3>${lang==="ar"?"توصيات المعالجة / Remediation guidance":"Remediation guidance / توصيات المعالجة"}</h3><ul>${getRemediationGuidance({score,severity,weaknesses,description:nvdText(cve,lang)}).map(x=>'<li>'+esc(x)+'</li>').join("")}</ul><p class="intel-small-note">${lang==="ar"?"توصيات عامة مبنية على بيانات السجل؛ اتبع إرشادات المورّد للإصدار المتأثر والتحديث المصحح.":"General guidance based on this record; follow the vendor's advisory for affected versions and fixed releases."}</p></section>
+      <div class="cve-detail-actions"><button class="outline-button" id="saveCurrentCve" type="button" data-save-cve="${esc(id)}">${lang==="ar"?"حفظ الثغرة ☆":"Save vulnerability ☆"}</button><a class="outline-button" href="https://nvd.nist.gov/vuln/detail/${encodeURIComponent(id)}" target="_blank" rel="noopener noreferrer">${esc(t("openNvd"))}</a><a class="outline-button" href="https://www.cve.org/CVERecord?id=${encodeURIComponent(id)}" target="_blank" rel="noopener noreferrer">${esc(t("openCve"))}</a></div>
       <p class="cve-attribution">Source: NIST National Vulnerability Database. Data may be incomplete or updated by the publisher.</p>`;
   } catch(err) {
     console.warn("CVE detail lookup failed:",err);
@@ -314,12 +345,13 @@ function ensureOverviewIntelMarkup(){
  section.id="overviewIntelSection";
  section.className="overview-intel-section";
  section.setAttribute("aria-labelledby","overviewIntelTitle");
- section.innerHTML='<div class="overview-intel-heading"><div><span class="eyebrow">LIVE INTELLIGENCE / موجز استخباراتي</span><h2 id="overviewIntelTitle">أهم المستجدات السيبرانية / Top intelligence</h2><p>ملخص سريع من البيانات العامة المحمّلة في لوحة المتابعة.</p></div></div><div class="overview-intel-grid"><article class="overview-intel-card"><div class="overview-intel-card-head"><div><span class="eyebrow">GLOBAL THREATS</span><h3>أهم 5 تهديدات عالمية</h3></div><button class="overview-more" type="button" data-tab="global-threats">عرض الكل ↗</button></div><div id="overviewTopThreats" class="overview-mini-list"></div></article><article class="overview-intel-card"><div class="overview-intel-card-head"><div><span class="eyebrow">CISA KEV CATALOG</span><h3>أبرز 5 ثغرات مستغلة</h3></div><button class="overview-more" type="button" data-tab="vulnerabilities">عرض الكل ↗</button></div><div id="overviewTopKeV" class="overview-mini-list"></div></article><article class="overview-intel-card"><div class="overview-intel-card-head"><div><span class="eyebrow">IRAQ CYBER WATCH</span><h3>آخر 5 إشعارات عراقية</h3></div><button class="overview-more" type="button" data-tab="iraq-watch">عرض الكل ↗</button></div><div id="overviewIraqUpdates" class="overview-mini-list"></div></article></div><p class="overview-intel-disclaimer">المعلومات مقتبسة من موجزات ومصادر منشورة؛ ترتيب الأولوية آلي للمساعدة في الفرز ولا يمثل تأكيداً بوقوع اختراق. / Published-source summary; priority ranking is triage assistance, not confirmation of a breach.</p>';
+ section.innerHTML='<div class="overview-intel-heading"><div><span class="eyebrow">LIVE INTELLIGENCE / موجز استخباراتي</span><h2 id="overviewIntelTitle">أهم المستجدات السيبرانية / Top intelligence</h2><p>ملخص سريع من البيانات العامة المحمّلة في لوحة المتابعة.</p></div></div><div class="overview-intel-grid"><article class="overview-intel-card"><div class="overview-intel-card-head"><div><span class="eyebrow">GLOBAL THREATS</span><h3>أهم 5 تهديدات عالمية</h3></div><button class="overview-more" type="button" data-tab="global-threats">عرض الكل ↗</button></div><div id="overviewTopThreats" class="overview-mini-list"></div></article><article class="overview-intel-card"><div class="overview-intel-card-head"><div><span class="eyebrow">CISA KEV CATALOG</span><h3>أبرز 5 ثغرات مستغلة</h3></div><button class="overview-more" type="button" data-tab="vulnerabilities">عرض الكل ↗</button></div><div id="overviewTopKeV" class="overview-mini-list"></div></article><article class="overview-intel-card"><div class="overview-intel-card-head"><div><span class="eyebrow">IRAQ CYBER WATCH</span><h3>آخر 5 إشعارات عراقية</h3></div><button class="overview-more" type="button" data-tab="iraq-watch">عرض الكل ↗</button></div><div id="overviewIraqUpdates" class="overview-mini-list"></div></article></div><div class="overview-saved-wrap"><div class="overview-intel-card-head"><div><span class="eyebrow">SAVED INTELLIGENCE</span><h3>قائمة التهديدات والثغرات المحفوظة / Saved intelligence</h3></div></div><div id="overviewSavedIntel" class="overview-saved-list"></div></div><p class="overview-intel-disclaimer">المعلومات مقتبسة من موجزات ومصادر منشورة؛ ترتيب الأولوية آلي للمساعدة في الفرز ولا يمثل تأكيداً بوقوع اختراق. / Published-source summary; priority ranking is triage assistance, not confirmation of a breach.</p>';
  stats.insertAdjacentElement("afterend",section);
  return section;
 }
 function renderOverviewIntel(){
  ensureOverviewIntelMarkup();
+ renderSavedIntel();
  const threatsNode=$("overviewTopThreats"),kevNode=$("overviewTopKeV"),iraqNode=$("overviewIraqUpdates");
  if(threatsNode){
   const top=globalAdvisoryItems.map(item=>({item,intel:classifyAdvisory(item)})).sort((a,b)=>b.intel.priority-a.intel.priority).slice(0,5);
@@ -382,7 +414,7 @@ function renderThreatList(){
   const why='<div class="intel-why"><small>'+esc(lang==="ar"?"لماذا هذه الأولوية؟":"Why this priority?")+'</small><span>'+esc(intel.reasons.join(" · ")||(lang==="ar"?"لا توجد مؤشرات إضافية":"No additional signals"))+'</span></div>';
   const cves=intel.cves.length?'<div class="intel-enrichment"><small>'+esc(translations[lang].relatedCves)+'</small><div>'+intel.cves.map(id=>'<a href="https://nvd.nist.gov/vuln/detail/'+encodeURIComponent(id)+'" target="_blank" rel="noopener noreferrer">'+esc(id)+'</a>').join("")+'</div></div>':"";
   const products=intel.products.length?'<div class="intel-products"><small>'+esc(lang==="ar"?"المنتجات المرتبطة وفق KEV":"Products matched in KEV")+'</small><span>'+esc(intel.products.join("، "))+'</span></div>':"";
-  return '<article class="intel-feed-item"><div class="intel-feed-meta"><span class="intel-source-label">'+esc(item.source||"CISA")+'</span><time>'+esc(date)+'</time></div><b>'+esc(item.title||"Untitled advisory")+'</b><div class="intel-tags">'+tags.join("")+'</div>'+why+'<p>'+esc(summary||"Open the publisher advisory for details.")+'</p>'+cves+products+'<a href="'+esc(url)+'" target="_blank" rel="noopener noreferrer">'+(lang==="ar"?"قراءة التحذير الأصلي ↗":"Read original advisory ↗")+'</a></article>';
+  return '<article class="intel-feed-item"><div class="intel-feed-meta"><span class="intel-source-label">'+esc(item.source||"CISA")+'</span><time>'+esc(date)+'</time></div><b>'+esc(item.title||"Untitled advisory")+'</b><div class="intel-tags">'+tags.join("")+'</div>'+why+'<p>'+esc(summary||"Open the publisher advisory for details.")+'</p>'+cves+products+'<div class="intel-card-actions"><a href="'+esc(url)+'" target="_blank" rel="noopener noreferrer">'+(lang==="ar"?"قراءة التحذير الأصلي ↗":"Read original advisory ↗")+'</a><button type="button" data-save-threat="'+esc(url||item.title)+'" data-title="'+esc(item.title||"")+'" data-url="'+esc(url)+'">'+(lang==="ar"?"حفظ ☆":"Save ☆")+'</button></div></article>';
  }).join("");
 }
 async function loadGlobalThreats(checkNew=false){
@@ -533,6 +565,7 @@ $("iocInput")?.addEventListener("keydown",e=>{if(e.key==="Enter")openIocLookups(
 $("iocClearBtn")?.addEventListener("click",()=>{localStorage.removeItem("msa-ioc-watchlist");renderIocWatchlist();});
 $("iocWatchlist")?.addEventListener("click",e=>{const b=e.target.closest("[data-ioc-remove]");if(!b)return;let items=[];try{items=JSON.parse(localStorage.getItem("msa-ioc-watchlist")||"[]");}catch{}items.splice(Number(b.dataset.iocRemove),1);localStorage.setItem("msa-ioc-watchlist",JSON.stringify(items));renderIocWatchlist();});
 renderIocWatchlist();
+bindSavedIntel();
 
 applyLanguage();
 loadGlobalThreats();

@@ -136,7 +136,8 @@ async function showCveDetails(id) {
     $("cveDetailBody").innerHTML=`<p class="cve-error">${esc(t("cveUnavailable"))}</p><div class="cve-detail-actions"><a class="outline-button" href="https://nvd.nist.gov/vuln/detail/${encodeURIComponent(id)}" target="_blank" rel="noopener noreferrer">${esc(t("openNvd"))}</a><a class="outline-button" href="https://www.cve.org/CVERecord?id=${encodeURIComponent(id)}" target="_blank" rel="noopener noreferrer">${esc(t("openCve"))}</a></div>`;
   }
 }
-\nfunction updateStats(items){
+
+function updateStats(items){
   $("kevCount").textContent=items.length.toLocaleString();
   const cutoff=new Date();cutoff.setDate(cutoff.getDate()-30);
   $("recentCount").textContent=items.filter(x=>new Date(x.dateAdded)>=cutoff).length.toLocaleString();
@@ -187,8 +188,13 @@ async function loadKev(){
 }
 $("langToggle").addEventListener("click",()=>{lang=lang==="en"?"ar":"en";localStorage.setItem("kgt-lang",lang);applyLanguage();});
 $("refreshBtn").addEventListener("click",loadKev);
+$("liveRefreshBtn").addEventListener("click",loadKev);
 $("searchInput").addEventListener("input",renderTable);
 $("vendorFilter").addEventListener("change",renderTable);
-$("ransomwareFilter").addEventListener("change",renderTable);\n$("kevTable").addEventListener("click",e=>{const button=e.target.closest("[data-cve]");if(button)showCveDetails(button.dataset.cve);});\n$("closeCveModal").addEventListener("click",closeCveModal);\n$("cveModal").addEventListener("click",e=>{if(e.target.hasAttribute("data-close-cve"))closeCveModal();});\ndocument.addEventListener("keydown",e=>{if(e.key==="Escape")closeCveModal();});
+$("ransomwareFilter").addEventListener("change",renderTable);
+$("kevTable").addEventListener("click",e=>{const button=e.target.closest("[data-cve]");if(button)showCveDetails(button.dataset.cve);});
+$("closeCveModal").addEventListener("click",closeCveModal);
+$("cveModal").addEventListener("click",e=>{if(e.target.hasAttribute("data-close-cve"))closeCveModal();});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeCveModal();});
 applyLanguage();
 loadKev();

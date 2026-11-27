@@ -376,12 +376,18 @@ $("threatSearch")?.addEventListener("input",renderThreatList);
 $("threatTypeFilter")?.addEventListener("change",renderThreatList);
 $("threatSortBtn")?.addEventListener("click",()=>{threatSortHigh=!threatSortHigh;$("threatSortBtn").textContent=lang==="ar"?(threatSortHigh?"الأولوية الأعلى":"الأولوية الأقل"):(threatSortHigh?"Highest priority":"Lowest priority");renderThreatList();});
 $("threatReportBtn")?.addEventListener("click",exportIntelReport);
+function updateThreatNotifyButton(){
+ const enabled=localStorage.getItem("msa-alerts-enabled")==="1"&&("Notification" in window)&&Notification.permission==="granted";
+ const button=$("threatNotifyBtn");if(button)button.textContent=lang==="ar"?(enabled?"إيقاف التنبيهات":"تفعيل التنبيهات"):(enabled?"Disable alerts":"Enable alerts");
+}
 $("threatNotifyBtn")?.addEventListener("click",async()=>{
+ if(localStorage.getItem("msa-alerts-enabled")==="1"){localStorage.removeItem("msa-alerts-enabled");updateThreatNotifyButton();showToast(lang==="ar"?"تم إيقاف التنبيهات":"Alerts disabled");return;}
  if(!("Notification" in window)){showToast(lang==="ar"?"متصفحك لا يدعم التنبيهات":"This browser does not support notifications");return;}
  const permission=await Notification.requestPermission();
- if(permission==="granted"){localStorage.setItem("msa-alerts-enabled","1");localStorage.setItem("msa-known-advisories",JSON.stringify(globalAdvisoryItems.map(x=>x.url||x.title)));$("threatNotifyBtn").textContent=lang==="ar"?"التنبيهات مفعّلة":"Alerts enabled";showToast(lang==="ar"?"التنبيهات تعمل أثناء فتح الموقع":"Alerts work while the site is open");}
+ if(permission==="granted"){localStorage.setItem("msa-alerts-enabled","1");localStorage.setItem("msa-known-advisories",JSON.stringify(globalAdvisoryItems.map(x=>x.url||x.title)));updateThreatNotifyButton();showToast(lang==="ar"?"التنبيهات تعمل أثناء فتح الموقع":"Alerts work while this site is open");}
  else showToast(lang==="ar"?"لم يتم منح إذن التنبيهات":"Notification permission was not granted");
 });
+updateThreatNotifyButton();
 setInterval(()=>{if(localStorage.getItem("msa-alerts-enabled")==="1")loadGlobalThreats(true);},15*60*1000);
 $("cveQuickOpen").addEventListener("click",()=>{
  const id=$("cveQuickSearch").value.trim().toUpperCase();

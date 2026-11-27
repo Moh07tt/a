@@ -305,7 +305,21 @@ function classifyAdvisory(item){
  const priorityLevel=priority>=75?"critical":priority>=55?"high":priority>=35?"medium":"low";
  return {category,score,severity,infrastructure,cves,matches,ransomware,products,priority,priorityLevel,reasons,ageDays};
 }
+function ensureOverviewIntelMarkup(){
+ let section=$("overviewIntelSection");
+ if(section)return section;
+ const stats=document.querySelector('[data-tab-panel="overview"] .stats-grid');
+ if(!stats)return null;
+ section=document.createElement("section");
+ section.id="overviewIntelSection";
+ section.className="overview-intel-section";
+ section.setAttribute("aria-labelledby","overviewIntelTitle");
+ section.innerHTML='<div class="overview-intel-heading"><div><span class="eyebrow">LIVE INTELLIGENCE / موجز استخباراتي</span><h2 id="overviewIntelTitle">أهم المستجدات السيبرانية / Top intelligence</h2><p>ملخص سريع من البيانات العامة المحمّلة في لوحة المتابعة.</p></div></div><div class="overview-intel-grid"><article class="overview-intel-card"><div class="overview-intel-card-head"><div><span class="eyebrow">GLOBAL THREATS</span><h3>أهم 5 تهديدات عالمية</h3></div><button class="overview-more" type="button" data-tab="global-threats">عرض الكل ↗</button></div><div id="overviewTopThreats" class="overview-mini-list"></div></article><article class="overview-intel-card"><div class="overview-intel-card-head"><div><span class="eyebrow">CISA KEV CATALOG</span><h3>أبرز 5 ثغرات مستغلة</h3></div><button class="overview-more" type="button" data-tab="vulnerabilities">عرض الكل ↗</button></div><div id="overviewTopKeV" class="overview-mini-list"></div></article><article class="overview-intel-card"><div class="overview-intel-card-head"><div><span class="eyebrow">IRAQ CYBER WATCH</span><h3>آخر 5 إشعارات عراقية</h3></div><button class="overview-more" type="button" data-tab="iraq-watch">عرض الكل ↗</button></div><div id="overviewIraqUpdates" class="overview-mini-list"></div></article></div><p class="overview-intel-disclaimer">المعلومات مقتبسة من موجزات ومصادر منشورة؛ ترتيب الأولوية آلي للمساعدة في الفرز ولا يمثل تأكيداً بوقوع اختراق. / Published-source summary; priority ranking is triage assistance, not confirmation of a breach.</p>';
+ stats.insertAdjacentElement("afterend",section);
+ return section;
+}
 function renderOverviewIntel(){
+ ensureOverviewIntelMarkup();
  const threatsNode=$("overviewTopThreats"),kevNode=$("overviewTopKeV"),iraqNode=$("overviewIraqUpdates");
  if(threatsNode){
   const top=globalAdvisoryItems.map(item=>({item,intel:classifyAdvisory(item)})).sort((a,b)=>b.intel.priority-a.intel.priority).slice(0,5);

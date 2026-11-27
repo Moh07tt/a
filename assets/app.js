@@ -24,7 +24,7 @@ const translations = {
     intelNetwork:"INTELLIGENCE NETWORK", sourceHealth:"Source health", openData:"Open data", exploitedCatalog:"Known exploited vulnerabilities",
     connecting:"Connecting", planned:"Planned", vulnerabilityDatabase:"National Vulnerability Database", adversaryTactics:"Adversary tactics and techniques",
     threatIndicators:"Open threat indicators", openSource:"Open source ↗", apiKeyRequired:"API key required", sourceNote:"NVD and MITRE are linked as public references. Automated AlienVault OTX ingestion requires a server-side API key; no secret is stored in this public website.",
-    iraqIntel:"IRAQ CYBER INTELLIGENCE", iraqWatchTitle:"Iraq Cyber Watch", iraqWatchDesc:"Official Iraqi cybersecurity notices and public digital-safety resources.", nationalSources:"National sources", nccName:"National Cybersecurity Center of Iraq", nccDesc:"Official national cybersecurity information and advisories", nccAdvisories:"Iraqi security advisories", nccAdvisoriesDesc:"Published alerts, reports and technical guidance", amanName:"AMAN – Digital Protection", amanDesc:"Iraqi public digital-protection platform", visit:"Visit ↗", read:"Read ↗", iraqScopeTitle:"Coverage note", iraqScopeText:"This section links to official Iraqi resources. It does not yet aggregate or independently verify incidents inside Iraq.", transparency:"TRANSPARENCY", methodologyTitle:"Sources & methodology", methodologyDesc:"How this public intelligence dashboard handles information.", connectedData:"Connected data", connectedDataDesc:"CISA KEV is retrieved from its public JSON feed when the page loads. The dashboard shows the source status and refresh time.", externalReferences:"External references", externalReferencesDesc:"NVD, MITRE ATT&CK and Iraqi resources currently open their publishers websites; they are not imported into this dashboard.", editorialRule:"Editorial rule", editorialRuleDesc:"A public advisory is not proof of a local incident. Every future report should include its publisher, publication date and original link.", footerDisclaimer:"Independent project · Data belongs to its respective publishers.", failed:"Both KEV data sources are unavailable — retry later.", loaded:"CISA KEV feed updated",
+    iraqIntel:"IRAQ CYBER INTELLIGENCE", iraqWatchTitle:"Iraq Cyber Watch", iraqWatchDesc:"Official Iraqi cybersecurity notices and public digital-safety resources.", nationalSources:"National sources", nccName:"National Cybersecurity Center of Iraq", nccDesc:"Official national cybersecurity information and advisories", nccAdvisories:"Iraqi security advisories", nccAdvisoriesDesc:"Published alerts, reports and technical guidance", amanName:"AMAN – Digital Protection", amanDesc:"Iraqi public digital-protection platform", visit:"Visit ↗", read:"Read ↗", iraqScopeTitle:"Coverage note", iraqScopeText:"This section links to official Iraqi resources. It does not yet aggregate or independently verify incidents inside Iraq.", transparency:"TRANSPARENCY", methodologyTitle:"Sources & methodology", methodologyDesc:"How this public intelligence dashboard handles information.", connectedData:"Connected data", connectedDataDesc:"CISA KEV is retrieved from its public JSON feed when the page loads. The dashboard shows the source status and refresh time.", externalReferences:"External references", externalReferencesDesc:"NVD, MITRE ATT&CK and Iraqi resources currently open their publishers websites; they are not imported into this dashboard.", editorialRule:"Editorial rule", editorialRuleDesc:"A public advisory is not proof of a local incident. Every future report should include its publisher, publication date and original link.", footerDisclaimer:"Independent project · Data belongs to its respective publishers.", failed:"Both KEV data sources are unavailable — retry later.", loaded:"CISA KEV feed updated", cveDetailEyebrow:"VULNERABILITY INTELLIGENCE", cveLoading:"Loading CVE details from NVD…", cveUnavailable:"NVD details are temporarily unavailable. Open the original CVE record instead.", description:"Description", severity:"Severity", cvssScore:"CVSS score", published:"Published", lastModified:"Last modified", weaknesses:"Weaknesses", references:"References", affectedProducts:"Affected configurations", noDescription:"No description supplied by NVD.", notScored:"Not scored by NVD", noReferences:"No references supplied.", openNvd:"Open NVD record ↗", openCve:"Open CVE.org ↗", close:"Close",
     noResults:"No matching records.", records:"records", cisaConnected:"Connected", cisaFailed:"Unavailable", allCampaigns:"All campaign indicators", ransomwareYes:"Ransomware: Known", ransomwareNo:"Ransomware: Not reported", ransomwareUse:"RANSOMWARE USE", requiredAction:"REQUIRED ACTION", ransomwareKnown:"Known", ransomwareUnknown:"Not reported", actionUnavailable:"No action specified"
   },
   ar: {
@@ -44,7 +44,7 @@ const translations = {
     intelNetwork:"شبكة الاستخبارات", sourceHealth:"حالة المصادر", openData:"بيانات مفتوحة", exploitedCatalog:"الثغرات المستغلة المعروفة",
     connecting:"جارٍ الاتصال", planned:"مخطط لاحقاً", vulnerabilityDatabase:"قاعدة بيانات الثغرات الوطنية", adversaryTactics:"تكتيكات وتقنيات الخصوم",
     threatIndicators:"مؤشرات تهديد مفتوحة", openSource:"فتح المصدر ↗", apiKeyRequired:"يتطلب مفتاح API", sourceNote:"تم ربط NVD وMITRE كمراجع عامة. يتطلب جلب بيانات AlienVault OTX تلقائياً مفتاح API محفوظاً في الخادم؛ لا نضع أي مفتاح سري في موقع عام.",
-    iraqIntel:"استخبارات العراق السيبرانية", iraqWatchTitle:"مراقبة العراق السيبرانية", iraqWatchDesc:"الإشعارات العراقية الرسمية ومصادر السلامة الرقمية العامة.", nationalSources:"مصادر وطنية", nccName:"المركز الوطني للأمن السيبراني في العراق", nccDesc:"المعلومات والإشعارات الوطنية الرسمية للأمن السيبراني", nccAdvisories:"الإشعارات الأمنية العراقية", nccAdvisoriesDesc:"تنبيهات وتقارير وإرشادات تقنية منشورة", amanName:"أمان – الحماية الرقمية", amanDesc:"منصة عراقية عامة للحماية الرقمية", visit:"زيارة ↗", read:"قراءة ↗", iraqScopeTitle:"ملاحظة حول التغطية", iraqScopeText:"يربط هذا القسم بالمصادر العراقية الرسمية. لا يجمع أو يتحقق بشكل مستقل من الحوادث داخل العراق حتى الآن.", transparency:"الشفافية", methodologyTitle:"المصادر ومنهجية العمل", methodologyDesc:"كيف تتعامل لوحة الاستخبارات العامة مع المعلومات.", connectedData:"البيانات المتصلة", connectedDataDesc:"يتم جلب CISA KEV من موجز JSON العام عند تحميل الصفحة، وتعرض اللوحة حالة المصدر ووقت التحديث.", externalReferences:"المراجع الخارجية", externalReferencesDesc:"تفتح روابط NVD وMITRE ATT&CK والمصادر العراقية مواقعها الأصلية حالياً، ولا تُستورد بياناتها إلى هذه اللوحة.", editorialRule:"القاعدة التحريرية", editorialRuleDesc:"الإشعار العام لا يثبت وقوع حادث محلي. يجب أن يتضمن كل تقرير مستقبلي الجهة الناشرة وتاريخ النشر والرابط الأصلي.", footerDisclaimer:"مشروع مستقل · البيانات ملك للجهات الناشرة.", failed:"تعذر الوصول إلى مصدري بيانات KEV — أعد المحاولة لاحقاً.", loaded:"تم تحديث بيانات CISA KEV",
+    iraqIntel:"استخبارات العراق السيبرانية", iraqWatchTitle:"مراقبة العراق السيبرانية", iraqWatchDesc:"الإشعارات العراقية الرسمية ومصادر السلامة الرقمية العامة.", nationalSources:"مصادر وطنية", nccName:"المركز الوطني للأمن السيبراني في العراق", nccDesc:"المعلومات والإشعارات الوطنية الرسمية للأمن السيبراني", nccAdvisories:"الإشعارات الأمنية العراقية", nccAdvisoriesDesc:"تنبيهات وتقارير وإرشادات تقنية منشورة", amanName:"أمان – الحماية الرقمية", amanDesc:"منصة عراقية عامة للحماية الرقمية", visit:"زيارة ↗", read:"قراءة ↗", iraqScopeTitle:"ملاحظة حول التغطية", iraqScopeText:"يربط هذا القسم بالمصادر العراقية الرسمية. لا يجمع أو يتحقق بشكل مستقل من الحوادث داخل العراق حتى الآن.", transparency:"الشفافية", methodologyTitle:"المصادر ومنهجية العمل", methodologyDesc:"كيف تتعامل لوحة الاستخبارات العامة مع المعلومات.", connectedData:"البيانات المتصلة", connectedDataDesc:"يتم جلب CISA KEV من موجز JSON العام عند تحميل الصفحة، وتعرض اللوحة حالة المصدر ووقت التحديث.", externalReferences:"المراجع الخارجية", externalReferencesDesc:"تفتح روابط NVD وMITRE ATT&CK والمصادر العراقية مواقعها الأصلية حالياً، ولا تُستورد بياناتها إلى هذه اللوحة.", editorialRule:"القاعدة التحريرية", editorialRuleDesc:"الإشعار العام لا يثبت وقوع حادث محلي. يجب أن يتضمن كل تقرير مستقبلي الجهة الناشرة وتاريخ النشر والرابط الأصلي.", footerDisclaimer:"مشروع مستقل · البيانات ملك للجهات الناشرة.", failed:"تعذر الوصول إلى مصدري بيانات KEV — أعد المحاولة لاحقاً.", loaded:"تم تحديث بيانات CISA KEV", cveDetailEyebrow:"استخبارات الثغرات", cveLoading:"جارٍ تحميل تفاصيل الثغرة من NVD…", cveUnavailable:"تعذر جلب تفاصيل NVD مؤقتاً. يمكنك فتح سجل CVE الأصلي.", description:"الوصف", severity:"درجة الخطورة", cvssScore:"درجة CVSS", published:"تاريخ النشر", lastModified:"آخر تحديث", weaknesses:"أنواع الضعف", references:"المراجع", affectedProducts:"الأنظمة/المنتجات المتأثرة", noDescription:"لا يتوفر وصف من NVD.", notScored:"لم تُقيّم NVD الخطورة", noReferences:"لا توجد مراجع منشورة.", openNvd:"فتح سجل NVD ↗", openCve:"فتح CVE.org ↗", close:"إغلاق",
     noResults:"لا توجد نتائج مطابقة.", records:"سجلات", cisaConnected:"متصل", cisaFailed:"غير متاح", allCampaigns:"كل مؤشرات الحملات", ransomwareYes:"استخدام الفدية: معروف", ransomwareNo:"لم يُذكر استخدام الفدية", ransomwareUse:"استخدام برمجيات الفدية", requiredAction:"الإجراء المطلوب", ransomwareKnown:"مذكور", ransomwareUnknown:"غير مذكور", actionUnavailable:"لم يحدد إجراء"
   }
 };
@@ -72,12 +72,68 @@ function renderTable(){
   $("resultCount").textContent=`${filtered.length} ${t("records")}`;
   if(!filtered.length){$("kevTable").innerHTML=`<tr><td colspan="7" class="loading-cell">${t("noResults")}</td></tr>`;return;}
   $("kevTable").innerHTML=filtered.map(x=>`<tr>
-    <td><a class="cve-link" href="https://www.cve.org/CVERecord?id=${encodeURIComponent(x.cveID)}" target="_blank" rel="noreferrer">${esc(x.cveID)}</a></td>
+    <td><button class="cve-link cve-open-button" type="button" data-cve="${esc(x.cveID)}">${esc(x.cveID)}</button></td>
     <td class="vendor-cell">${esc(x.vendorProject)}<div class="muted-cell">${esc(x.product)}</div></td>
     <td>${esc(x.vulnerabilityName)}</td><td>${safeDate(x.dateAdded)}</td><td>${safeDate(x.dueDate)}</td><td><span class="intel-tag ${x.knownRansomwareCampaignUse==="Known"?"tag-warning":"tag-muted"}">${x.knownRansomwareCampaignUse==="Known"?t("ransomwareKnown"):t("ransomwareUnknown")}</span></td><td class="action-cell">${esc(x.requiredAction||t("actionUnavailable"))}</td>
   </tr>`).join("");
 }
-function updateStats(items){
+
+function nvdText(cve, langCode) {
+  const descriptions=cve.descriptions||[];
+  return descriptions.find(x=>x.lang===langCode)?.value || descriptions.find(x=>x.lang==="en")?.value || t("noDescription");
+}
+function metricFor(cve) {
+  const m=cve.metrics||{};
+  return (m.cvssMetricV40||[])[0] || (m.cvssMetricV31||[])[0] || (m.cvssMetricV30||[])[0] || (m.cvssMetricV2||[])[0] || null;
+}
+function openCveModal() {
+  $("cveModal").classList.add("open");
+  $("cveModal").setAttribute("aria-hidden","false");
+  document.body.classList.add("modal-open");
+}
+function closeCveModal() {
+  $("cveModal").classList.remove("open");
+  $("cveModal").setAttribute("aria-hidden","true");
+  document.body.classList.remove("modal-open");
+}
+async function showCveDetails(id) {
+  if(!/^CVE-\\d{4}-\\d{4,}$/i.test(id)) return;
+  openCveModal();
+  $("cveModalTitle").textContent=id;
+  $("cveDetailBody").innerHTML=`<div class="loading-cell"><span class="spinner"></span>${t("cveLoading")}</div>`;
+  try {
+    const response=await fetch(`https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=${encodeURIComponent(id)}`,{headers:{Accept:"application/json"}});
+    if(!response.ok) throw new Error(`NVD HTTP ${response.status}`);
+    const payload=await response.json();
+    const cve=payload.vulnerabilities?.[0]?.cve;
+    if(!cve) throw new Error("CVE not found");
+    const metric=metricFor(cve);
+    const cvss=metric?.cvssData;
+    const severity=metric?.cvssData?.baseSeverity || metric?.baseSeverity || t("notScored");
+    const score=cvss?.baseScore ?? "—";
+    const weaknesses=(cve.weaknesses||[]).flatMap(w=>w.description||[]).map(w=>w.value).filter(Boolean);
+    const refs=(cve.references||[]).slice(0,8);
+    const configs=(cve.configurations||[]).slice(0,5);
+    const severityClass=String(severity).toLowerCase();
+    $("cveDetailBody").innerHTML=`
+      <div class="cve-metrics">
+        <div class="cve-metric"><small>${esc(t("severity"))}</small><b class="severity-pill severity-${esc(severityClass)}">${esc(severity)}</b></div>
+        <div class="cve-metric"><small>${esc(t("cvssScore"))}</small><b>${esc(score)}</b></div>
+        <div class="cve-metric"><small>${esc(t("published"))}</small><b>${esc(safeDate((cve.published||"").slice(0,10)))}</b></div>
+        <div class="cve-metric"><small>${esc(t("lastModified"))}</small><b>${esc(safeDate((cve.lastModified||"").slice(0,10)))}</b></div>
+      </div>
+      <section class="cve-detail-section"><h3>${esc(t("description"))}</h3><p>${esc(nvdText(cve,lang))}</p></section>
+      <section class="cve-detail-section"><h3>${esc(t("weaknesses"))}</h3><p>${weaknesses.length?weaknesses.map(esc).join(" · "):"—"}</p></section>
+      <section class="cve-detail-section"><h3>${esc(t("affectedProducts"))}</h3><p>${configs.length?esc(configs.map((_,i)=>"Configuration "+(i+1)).join(" · ")):"See NVD record for affected configurations."}</p></section>
+      <section class="cve-detail-section"><h3>${esc(t("references"))}</h3>${refs.length?'<ul class="cve-reference-list">'+refs.map(r=>'<li><a href="'+esc(r.url)+'" target="_blank" rel="noopener noreferrer">'+esc(r.url)+'</a></li>').join("")+'</ul>':'<p>'+esc(t("noReferences"))+'</p>'}</section>
+      <div class="cve-detail-actions"><a class="outline-button" href="https://nvd.nist.gov/vuln/detail/${encodeURIComponent(id)}" target="_blank" rel="noopener noreferrer">${esc(t("openNvd"))}</a><a class="outline-button" href="https://www.cve.org/CVERecord?id=${encodeURIComponent(id)}" target="_blank" rel="noopener noreferrer">${esc(t("openCve"))}</a></div>
+      <p class="cve-attribution">Source: NIST National Vulnerability Database. Data may be incomplete or updated by the publisher.</p>`;
+  } catch(err) {
+    console.warn("CVE detail lookup failed:",err);
+    $("cveDetailBody").innerHTML=`<p class="cve-error">${esc(t("cveUnavailable"))}</p><div class="cve-detail-actions"><a class="outline-button" href="https://nvd.nist.gov/vuln/detail/${encodeURIComponent(id)}" target="_blank" rel="noopener noreferrer">${esc(t("openNvd"))}</a><a class="outline-button" href="https://www.cve.org/CVERecord?id=${encodeURIComponent(id)}" target="_blank" rel="noopener noreferrer">${esc(t("openCve"))}</a></div>`;
+  }
+}
+\nfunction updateStats(items){
   $("kevCount").textContent=items.length.toLocaleString();
   const cutoff=new Date();cutoff.setDate(cutoff.getDate()-30);
   $("recentCount").textContent=items.filter(x=>new Date(x.dateAdded)>=cutoff).length.toLocaleString();
@@ -130,6 +186,6 @@ $("langToggle").addEventListener("click",()=>{lang=lang==="en"?"ar":"en";localSt
 $("refreshBtn").addEventListener("click",loadKev);
 $("searchInput").addEventListener("input",renderTable);
 $("vendorFilter").addEventListener("change",renderTable);
-$("ransomwareFilter").addEventListener("change",renderTable);
+$("ransomwareFilter").addEventListener("change",renderTable);\n$("kevTable").addEventListener("click",e=>{const button=e.target.closest("[data-cve]");if(button)showCveDetails(button.dataset.cve);});\n$("closeCveModal").addEventListener("click",closeCveModal);\n$("cveModal").addEventListener("click",e=>{if(e.target.hasAttribute("data-close-cve"))closeCveModal();});\ndocument.addEventListener("keydown",e=>{if(e.key==="Escape")closeCveModal();});
 applyLanguage();
 loadKev();

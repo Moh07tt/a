@@ -60,3 +60,5 @@ body.modal-open{overflow:hidden}
 @media(max-width:600px){.cve-detail-panel{padding:18px 14px}.cve-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.cve-detail-head h2{font-size:18px}}
 html[dir="rtl"] .cve-detail-panel{border-left:0;border-right:1px solid #2b4059}
 html[dir="rtl"] .cve-reference-list{padding-left:0;padding-right:18px}
+
+.live-indicator{border:0;background:transparent;padding:8px 4px;cursor:pointer;font:inherit;font-size:9px;letter-spacing:1.2px}.live-indicator:hover{color:#72b5ff}.live-indicator:focus-visible{outline:2px solid #4b9cff;outline-offset:4px;border-radius:5px}

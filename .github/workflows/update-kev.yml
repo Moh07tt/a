@@ -45,7 +45,7 @@ jobs:
           if not items:
               raise SystemExit("CISA advisory feed returned no usable items")
           payload = {"source":"CISA Cybersecurity Advisories RSS","generatedAt":datetime.datetime.now(datetime.timezone.utc).isoformat(),"items":items}
-          pathlib.Path("data/global-threats.json").write_text(json.dumps(payload,ensure_ascii=False,indent=2)+"\\n",encoding="utf-8")
+          pathlib.Path("data/global-threats.json").write_text(json.dumps(payload,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
           print(f"Validated {len(items)} public advisories.")
           PY
       - name: Commit advisory snapshot when changed

@@ -62,3 +62,30 @@ html[dir="rtl"] .cve-detail-panel{border-left:0;border-right:1px solid #2b4059}
 html[dir="rtl"] .cve-reference-list{padding-left:0;padding-right:18px}
 
 .live-indicator{border:0;background:transparent;padding:8px 4px;cursor:pointer;font:inherit;font-size:9px;letter-spacing:1.2px}.live-indicator:hover{color:#72b5ff}.live-indicator:focus-visible{outline:2px solid #4b9cff;outline-offset:4px;border-radius:5px}
+
+
+/* Iraq cyber hero background */
+.hero{
+  background-image:
+    linear-gradient(90deg,rgba(5,12,23,.96) 0%,rgba(5,12,23,.86) 43%,rgba(5,12,23,.52) 72%,rgba(5,12,23,.40) 100%),
+    linear-gradient(0deg,rgba(5,12,23,.48),rgba(5,12,23,.12)),
+    url("./iraq-cyber-hero.webp");
+  background-size:cover;
+  background-position:center 37%;
+  background-repeat:no-repeat;
+  border-color:#284b70;
+  box-shadow:inset 0 0 0 1px rgba(91,165,235,.08),0 14px 35px rgba(0,0,0,.18);
+}
+.hero-orbit{opacity:.32}
+.hero h1,.hero p,.hero .eyebrow,.hero-meta{position:relative;z-index:1}
+@media(max-width:720px){
+  .hero{
+    background-image:
+      linear-gradient(90deg,rgba(5,12,23,.88),rgba(5,12,23,.62)),
+      linear-gradient(0deg,rgba(5,12,23,.60),rgba(5,12,23,.18)),
+      url("./iraq-cyber-hero.webp");
+    background-position:center 30%;
+    min-height:230px;
+  }
+  .hero-orbit{display:none}
+}

@@ -50,6 +50,26 @@ const translations = {
     noResults:"لا توجد نتائج مطابقة.", records:"سجلات", cisaConnected:"متصل", cisaFailed:"غير متاح", allCampaigns:"كل مؤشرات الحملات", ransomwareYes:"استخدام الفدية: معروف", ransomwareNo:"لم يُذكر استخدام الفدية", ransomwareUse:"استخدام برمجيات الفدية", requiredAction:"الإجراء المطلوب", ransomwareKnown:"مذكور", ransomwareUnknown:"غير مذكور", actionUnavailable:"لم يحدد إجراء"
   }
 };
+translations.en.globalThreats="Global Threats";translations.ar.globalThreats="التهديدات العالمية";
+translations.en.cveIntelligence="CVE Intelligence";translations.ar.cveIntelligence="استخبارات الثغرات";
+translations.en.globalThreatEyebrow="GLOBAL THREAT INTELLIGENCE";translations.ar.globalThreatEyebrow="استخبارات التهديدات العالمية";
+translations.en.globalThreatTitle="Global threat briefings";translations.ar.globalThreatTitle="موجز التهديدات العالمية";
+translations.en.globalThreatDesc="Recent public advisories from trusted cybersecurity publishers.";translations.ar.globalThreatDesc="أحدث التحذيرات العامة من جهات موثوقة في الأمن السيبراني.";
+translations.en.feedConnecting="Connecting";translations.ar.feedConnecting="جارٍ الاتصال";
+translations.en.globalThreatSource="Source: CISA Cybersecurity Advisories RSS feed.";translations.ar.globalThreatSource="المصدر: موجز التحذيرات السيبرانية من CISA.";
+translations.en.intelCautionTitle="Verification note";translations.ar.intelCautionTitle="ملاحظة التحقق";
+translations.en.intelCautionText="Publisher advisories are not evidence that a specific organization or country has been compromised.";translations.ar.intelCautionText="التحذيرات المنشورة ليست دليلاً على اختراق مؤسسة أو دولة بعينها.";
+translations.en.cveIntelEyebrow="CVE INTELLIGENCE";translations.ar.cveIntelEyebrow="استخبارات الثغرات";
+translations.en.cveIntelTitle="Vulnerability intelligence";translations.ar.cveIntelTitle="استخبارات الثغرات الأمنية";
+translations.en.cveIntelDesc="Search the CISA exploited-vulnerability catalog and open technical records.";translations.ar.cveIntelDesc="ابحث في كتالوج CISA للثغرات المستغلة وافتح السجلات التقنية.";
+translations.en.publicCatalog="Public catalog";translations.ar.publicCatalog="كتالوج عام";
+translations.en.cveQuickPlaceholder="Enter a CVE ID, e.g. CVE-2024-3400";translations.ar.cveQuickPlaceholder="أدخل معرّف الثغرة، مثال CVE-2024-3400";
+translations.en.lookupCve="Look up CVE";translations.ar.lookupCve="بحث عن الثغرة";
+translations.en.kevCatalogCount="KEV records loaded";translations.ar.kevCatalogCount="سجلات KEV المحمّلة";
+translations.en.nvdEnrichment="Technical enrichment";translations.ar.nvdEnrichment="التفاصيل التقنية";
+translations.en.nvdEnrichmentText="NVD CVSS scores, descriptions and references load when a CVE record is opened.";translations.ar.nvdEnrichmentText="تُحمّل درجات CVSS والأوصاف والمراجع من NVD عند فتح سجل الثغرة.";
+translations.en.browseKev="Browse exploited vulnerabilities";translations.ar.browseKev="استعراض الثغرات المستغلة";
+translations.en.cveIntelNote="CISA KEV indicates known exploitation; severity scoring is a separate assessment and may not be available for every record.";translations.ar.cveIntelNote="إدراج الثغرة في CISA KEV يعني وجود استغلال معروف؛ أما درجة الخطورة فتقييم منفصل وقد لا تتوفر لكل السجلات.";
 function t(key){ return translations[lang][key] || key; }
 function applyLanguage(){
   document.documentElement.lang = lang;
@@ -81,7 +101,7 @@ function renderTable(){
 }
 
 function setActiveTab(name){
-  const allowed=["overview","vulnerabilities","alerts","sources","iraq-watch","methodology"];
+  const allowed=["overview","vulnerabilities","alerts","global-threats","cve-intelligence","sources","iraq-watch","methodology"];
   const active=allowed.includes(name)?name:"overview";
   document.querySelectorAll("[data-tab-panel]").forEach(panel=>{
     panel.classList.toggle("active",panel.dataset.tabPanel===active);
@@ -164,6 +184,7 @@ async function showCveDetails(id) {
 }
 
 function updateStats(items){
+  const countNode=$("cveIntelCount"); if(countNode) countNode.textContent=items.length.toLocaleString();
   $("kevCount").textContent=items.length.toLocaleString();
   const cutoff=new Date();cutoff.setDate(cutoff.getDate()-30);
   $("recentCount").textContent=items.filter(x=>new Date(x.dateAdded)>=cutoff).length.toLocaleString();
@@ -229,7 +250,37 @@ $("kevTable").addEventListener("click",e=>{const button=e.target.closest("[data-
 $("closeCveModal").addEventListener("click",closeCveModal);
 $("cveModal").addEventListener("click",e=>{if(e.target.hasAttribute("data-close-cve"))closeCveModal();});
 document.addEventListener("keydown",e=>{if(e.key==="Escape")closeCveModal();});
+
+async function loadGlobalThreats(){
+ const list=$("globalThreatList"),state=$("threatFeedState"),updated=$("threatFeedUpdated"); if(!list)return;
+ try{
+  const res=await fetch("./data/global-threats.json?ts="+Date.now(),{cache:"no-store"});
+  if(!res.ok)throw new Error("HTTP "+res.status);
+  const payload=await res.json(); if(!Array.isArray(payload.items)||!payload.items.length)throw new Error("Empty advisory snapshot");
+  list.innerHTML=payload.items.slice(0,20).map(item=>{
+   const d=item.published?new Date(item.published):null;
+   const date=d&&!isNaN(d)?d.toLocaleString(lang==="ar"?"ar-IQ":"en-US",{dateStyle:"medium"}):"";
+   const url=/^https:\/\//.test(item.url||"")?item.url:"#";
+   return '<article class="intel-feed-item"><div class="intel-feed-meta"><span class="intel-source-label">'+esc(item.source||"CISA")+'</span><time>'+esc(date)+'</time></div><b>'+esc(item.title||"Untitled advisory")+'</b><p>'+esc(item.summary||"Open the publisher advisory for details.")+'</p><a href="'+esc(url)+'" target="_blank" rel="noopener noreferrer">'+(lang==="ar"?"قراءة التحذير الأصلي ↗":"Read original advisory ↗")+'</a></article>';
+  }).join("");
+  state.textContent=lang==="ar"?"متصل":"Connected";
+  updated.textContent=payload.generatedAt?new Date(payload.generatedAt).toLocaleString(lang==="ar"?"ar-IQ":"en-US"):"";
+ }catch(err){
+  console.warn("CISA advisory snapshot unavailable",err);
+  list.innerHTML='<div class="notice"><b>'+esc(lang==="ar"?"الموجز غير متاح حالياً":"Feed temporarily unavailable")+'</b><span>'+esc(lang==="ar"?"راجع التحذيرات مباشرة من موقع CISA الرسمي.":"Review advisories directly on the official CISA website.")+'</span><a href="https://www.cisa.gov/news-events/cybersecurity-advisories" target="_blank" rel="noopener noreferrer">CISA Cybersecurity Advisories ↗</a></div>';
+  state.textContent=lang==="ar"?"غير متاح":"Unavailable";
+ }
+}
+$("cveQuickOpen").addEventListener("click",()=>{
+ const id=$("cveQuickSearch").value.trim().toUpperCase();
+ if(/^CVE-\\d{4}-\\d{4,}$/.test(id))showCveDetails(id);
+ else showToast(lang==="ar"?"أدخل معرّف CVE صحيحاً":"Enter a valid CVE identifier");
+});
+$("cveQuickSearch").addEventListener("keydown",e=>{if(e.key==="Enter")$("cveQuickOpen").click();});
+$("openKevTab").addEventListener("click",()=>setActiveTab("vulnerabilities"));
+
 applyLanguage();
 const initialTab=location.hash.slice(1);
-setActiveTab(["overview","vulnerabilities","alerts","sources","iraq-watch","methodology"].includes(initialTab)?initialTab:"overview");
+setActiveTab(["overview","vulnerabilities","alerts","global-threats","cve-intelligence","sources","iraq-watch","methodology"].includes(initialTab)?initialTab:"overview");
 loadKev();
+loadGlobalThreats();

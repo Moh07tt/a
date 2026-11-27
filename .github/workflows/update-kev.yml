@@ -1,6 +1,9 @@
 name: Update CISA KEV intelligence snapshot
 
 on:
+  push:
+    paths:
+      - ".github/workflows/update-kev.yml"
   workflow_dispatch:
   schedule:
     - cron: "17 */6 * * *"

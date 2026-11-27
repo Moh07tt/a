@@ -50,6 +50,28 @@ const translations = {
     noResults:"لا توجد نتائج مطابقة.", records:"سجلات", cisaConnected:"متصل", cisaFailed:"غير متاح", allCampaigns:"كل مؤشرات الحملات", ransomwareYes:"استخدام الفدية: معروف", ransomwareNo:"لم يُذكر استخدام الفدية", ransomwareUse:"استخدام برمجيات الفدية", requiredAction:"الإجراء المطلوب", ransomwareKnown:"مذكور", ransomwareUnknown:"غير مذكور", actionUnavailable:"لم يحدد إجراء"
   }
 };
+translations.en.threatType="Threat type";translations.ar.threatType="نوع التهديد";
+translations.en.severitySignal="Severity signal";translations.ar.severitySignal="مؤشر الخطورة";
+translations.en.infrastructure="Critical infrastructure";translations.ar.infrastructure="بنية تحتية حيوية";
+translations.en.relatedCves="Related CVEs";translations.ar.relatedCves="الثغرات المرتبطة";
+translations.en.knownExploited="Known exploited (KEV)";translations.ar.knownExploited="استغلال معروف (KEV)";
+translations.en.ransomwareSignal="Ransomware indicator";translations.ar.ransomwareSignal="مؤشر برمجيات فدية";
+translations.en.noScore="Not stated in advisory";translations.ar.noScore="غير محدد في التحذير";
+translations.en.sevCritical="Critical";translations.ar.sevCritical="حرج";
+translations.en.sevHigh="High";translations.ar.sevHigh="عالٍ";
+translations.en.sevMedium="Medium";translations.ar.sevMedium="متوسط";
+translations.en.sevLow="Low";translations.ar.sevLow="منخفض";
+translations.en.catRce="Remote code execution";translations.ar.catRce="تنفيذ أوامر عن بُعد";
+translations.en.catAuth="Authentication / access control";translations.ar.catAuth="مصادقة / التحكم بالوصول";
+translations.en.catInjection="Injection";translations.ar.catInjection="حقن";
+translations.en.catTraversal="Path traversal";translations.ar.catTraversal="اجتياز المسارات";
+translations.en.catDos="Denial of service";translations.ar.catDos="حجب الخدمة";
+translations.en.catInfo="Information disclosure";translations.ar.catInfo="كشف معلومات";
+translations.en.catMemory="Memory corruption";translations.ar.catMemory="فساد الذاكرة";
+translations.en.catIcs="Industrial / OT security";translations.ar.catIcs="أمن صناعي / تقنيات تشغيلية";
+translations.en.catGeneral="General vulnerability advisory";translations.ar.catGeneral="تحذير ثغرة عام";
+translations.en.infrastructureFlag="Infrastructure exposure signal";translations.ar.infrastructureFlag="مؤشر ارتباط بالبنية التحتية";
+translations.en.classificationNote="Automatic rule-based indicators from advisory text and CISA KEV matches. They are triage hints, not a verified incident or a substitute for vendor guidance.";translations.ar.classificationNote="مؤشرات آلية أولية مستخرجة من نص التحذير ومطابقات CISA KEV. هي للمساعدة في الفرز وليست إثباتاً لحادث أو بديلاً عن إرشادات الشركة المصنّعة.";
 translations.en.globalThreats="Global Threats";translations.ar.globalThreats="التهديدات العالمية";
 translations.en.cveIntelligence="CVE Intelligence";translations.ar.cveIntelligence="استخبارات الثغرات";
 translations.en.globalThreatEyebrow="GLOBAL THREAT INTELLIGENCE";translations.ar.globalThreatEyebrow="استخبارات التهديدات العالمية";
@@ -251,18 +273,66 @@ $("closeCveModal").addEventListener("click",closeCveModal);
 $("cveModal").addEventListener("click",e=>{if(e.target.hasAttribute("data-close-cve"))closeCveModal();});
 document.addEventListener("keydown",e=>{if(e.key==="Escape")closeCveModal();});
 
+function classifyAdvisory(item){
+ const raw=(String(item.title||"")+" "+String(item.summary||"")).replace(/<[^>]*>/g," ");
+ const text=raw.toLowerCase();
+ const cves=[...new Set(raw.match(/CVE-\\d{4}-\\d{4,}/gi)||[])].slice(0,8);
+ const matches=kevItems.filter(v=>cves.includes(String(v.cveID||"").toUpperCase()));
+ const infrastructure=/critical infrastructure|critical manufacturing|energy sector|water and wastewater|transportation systems|industrial control|\\bics\\b|\\bscada\\b|\\bplc\\b|\\bot\\b|power grid|electric utility|oil and gas/i.test(raw);
+ let category="catGeneral";
+ if(/industrial control|\\bics\\b|\\bscada\\b|\\bplc\\b|\\bot\\b|\\bmodbus\\b/i.test(raw))category="catIcs";
+ else if(/remote code execution|arbitrary code execution|command injection|code execution/i.test(raw))category="catRce";
+ else if(/path traversal|directory traversal/i.test(raw))category="catTraversal";
+ else if(/sql injection|xml injection|cross.site scripting|\\bxss\\b|injection vulnerability/i.test(raw))category="catInjection";
+ else if(/authentication bypass|improper authentication|missing authentication|hard.coded credentials|privilege escalation|access control/i.test(raw))category="catAuth";
+ else if(/denial.of.service|\\bdos\\b|resource exhaustion/i.test(raw))category="catDos";
+ else if(/information disclosure|data exposure|sensitive information/i.test(raw))category="catInfo";
+ else if(/buffer overflow|memory corruption|use.after.free|heap.based|stack.based/i.test(raw))category="catMemory";
+ const scores=[...raw.matchAll(/CVSS(?:[^0-9]{0,35})(10(?:\\.0)?|[0-9]\\.[0-9])/gi)].map(m=>Number(m[1])).filter(n=>n>=0&&n<=10);
+ const score=scores.length?Math.max(...scores):null;
+ const severity=score===null?null:score>=9?"sevCritical":score>=7?"sevHigh":score>=4?"sevMedium":"sevLow";
+ const ransomware=matches.some(v=>v.knownRansomwareCampaignUse==="Known")||/ransomware|برمجيات الفدية/i.test(raw);
+ const products=[...new Set(matches.map(v=>[v.vendorProject,v.product].filter(Boolean).join(" · ")))].slice(0,4);
+ return {category,score,severity,infrastructure,cves,matches,ransomware,products};
+}
+function renderThreatStats(items){
+ const node=$("globalThreatStats");if(!node)return;
+ const classified=items.map(classifyAdvisory);
+ const infra=classified.filter(x=>x.infrastructure).length;
+ const known=classified.filter(x=>x.matches.length).length;
+ const critical=classified.filter(x=>x.severity==="sevCritical").length;
+ node.innerHTML=[
+  [items.length,lang==="ar"?"تحذيرات معروضة":"Advisories shown"],
+  [infra,lang==="ar"?"مؤشرات بنية تحتية":"Infrastructure signals"],
+  [known,lang==="ar"?"تحذيرات مرتبطة بـ KEV":"KEV-linked advisories"],
+  [critical,lang==="ar"?"مؤشرات CVSS حرجة":"Critical CVSS signals"]
+ ].map(([n,label])=>'<div class="intel-stat"><b>'+n+'</b><span>'+esc(label)+'</span></div>').join("");
+}
 async function loadGlobalThreats(){
  const list=$("globalThreatList"),state=$("threatFeedState"),updated=$("threatFeedUpdated"); if(!list)return;
  try{
   const res=await fetch("./data/global-threats.json?ts="+Date.now(),{cache:"no-store"});
   if(!res.ok)throw new Error("HTTP "+res.status);
   const payload=await res.json(); if(!Array.isArray(payload.items)||!payload.items.length)throw new Error("Empty advisory snapshot");
-  list.innerHTML=payload.items.slice(0,20).map(item=>{
+  const items=payload.items.slice(0,20);
+  renderThreatStats(items);
+  list.innerHTML=items.map(item=>{
    const d=item.published?new Date(item.published):null;
    const date=d&&!isNaN(d)?d.toLocaleString(lang==="ar"?"ar-IQ":"en-US",{dateStyle:"medium"}):"";
    const url=/^https:\/\//.test(item.url||"")?item.url:"#";
-   const summary=new DOMParser().parseFromString(String(item.summary||""),"text/html").body.textContent.replace(/\s+/g," ").trim().slice(0,260);
-   return '<article class="intel-feed-item"><div class="intel-feed-meta"><span class="intel-source-label">'+esc(item.source||"CISA")+'</span><time>'+esc(date)+'</time></div><b>'+esc(item.title||"Untitled advisory")+'</b><p>'+esc(summary||"Open the publisher advisory for details.")+'</p><a href="'+esc(url)+'" target="_blank" rel="noopener noreferrer">'+(lang==="ar"?"قراءة التحذير الأصلي ↗":"Read original advisory ↗")+'</a></article>';
+   const summary=new DOMParser().parseFromString(String(item.summary||""),"text/html").body.textContent.replace(/\\s+/g," ").trim().slice(0,320);
+   const intel=classifyAdvisory(item);
+   const category=translations[lang][intel.category]||translations[lang].catGeneral;
+   const severity=intel.severity?translations[lang][intel.severity]:translations[lang].noScore;
+   const tags=[];
+   tags.push('<span class="intel-tag tag-category">'+esc(category)+'</span>');
+   if(intel.severity)tags.push('<span class="intel-tag severity-'+intel.severity.replace("sev","").toLowerCase()+'">'+esc(severity)+' · CVSS '+intel.score.toFixed(1)+'</span>');
+   if(intel.infrastructure)tags.push('<span class="intel-tag tag-infra">'+esc(translations[lang].infrastructureFlag)+'</span>');
+   if(intel.matches.length)tags.push('<span class="intel-tag tag-kev">'+esc(translations[lang].knownExploited)+'</span>');
+   if(intel.ransomware)tags.push('<span class="intel-tag tag-warning">'+esc(translations[lang].ransomwareSignal)+'</span>');
+   const cveHtml=intel.cves.length?'<div class="intel-enrichment"><small>'+esc(translations[lang].relatedCves)+'</small><div>'+intel.cves.map(id=>'<a href="https://nvd.nist.gov/vuln/detail/'+encodeURIComponent(id)+'" target="_blank" rel="noopener noreferrer">'+esc(id)+'</a>').join("")+'</div></div>':"";
+   const productsHtml=intel.products.length?'<div class="intel-products"><small>'+esc(lang==="ar"?"المنتجات المرتبطة وفق KEV":"Products matched in KEV")+'</small><span>'+esc(intel.products.join("، "))+'</span></div>':"";
+   return '<article class="intel-feed-item"><div class="intel-feed-meta"><span class="intel-source-label">'+esc(item.source||"CISA")+'</span><time>'+esc(date)+'</time></div><b>'+esc(item.title||"Untitled advisory")+'</b><div class="intel-tags">'+tags.join("")+'</div><p>'+esc(summary||"Open the publisher advisory for details.")+'</p>'+cveHtml+productsHtml+'<a href="'+esc(url)+'" target="_blank" rel="noopener noreferrer">'+(lang==="ar"?"قراءة التحذير الأصلي ↗":"Read original advisory ↗")+'</a></article>';
   }).join("");
   state.textContent=lang==="ar"?"متصل":"Connected";
   updated.textContent=payload.generatedAt?new Date(payload.generatedAt).toLocaleString(lang==="ar"?"ar-IQ":"en-US"):"";

@@ -243,6 +243,7 @@ async function loadKev(){
     kevItems=data.vulnerabilities;
     kevItems.sort((a,b)=>new Date(b.dateAdded)-new Date(a.dateAdded));
     updateStats(kevItems);
+    renderOverviewIntel();
     const vendors=[...new Set(kevItems.map(x=>x.vendorProject).filter(Boolean))].sort();
     const current=$("vendorFilter").value;
     $("vendorFilter").innerHTML=`<option value="">${t("allVendors")}</option>`+vendors.map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join("");
@@ -304,6 +305,33 @@ function classifyAdvisory(item){
  const priorityLevel=priority>=75?"critical":priority>=55?"high":priority>=35?"medium":"low";
  return {category,score,severity,infrastructure,cves,matches,ransomware,products,priority,priorityLevel,reasons,ageDays};
 }
+function renderOverviewIntel(){
+ const threatsNode=$("overviewTopThreats"),kevNode=$("overviewTopKeV"),iraqNode=$("overviewIraqUpdates");
+ if(threatsNode){
+  const top=globalAdvisoryItems.map(item=>({item,intel:classifyAdvisory(item)})).sort((a,b)=>b.intel.priority-a.intel.priority).slice(0,5);
+  threatsNode.innerHTML=top.length?top.map(({item,intel})=>{
+   const date=item.published?new Date(item.published):null;
+   const dateText=date&&!isNaN(date)?date.toLocaleDateString(lang==="ar"?"ar-IQ":"en-US"):"";
+   const url=String(item.url||"").startsWith("https://")?item.url:"https://www.cisa.gov/news-events/cybersecurity-advisories";
+   const level=lang==="ar"?({critical:"حرج",high:"مرتفع",medium:"متوسط",low:"منخفض"}[intel.priorityLevel]):intel.priorityLevel.toUpperCase();
+   return '<a class="overview-mini-item" href="'+esc(url)+'" target="_blank" rel="noopener noreferrer"><span class="overview-mini-main"><b>'+esc(item.title)+'</b><small>'+esc(dateText)+(dateText?' · ':'')+'CISA</small></span><span class="overview-mini-badge priority-'+intel.priorityLevel+'">'+esc(level)+'</span></a>';
+  }).join(""):'<div class="notice">لا توجد بيانات تهديدات متاحة حالياً.</div>';
+ }
+ if(kevNode){
+  const top=kevItems.slice().sort((a,b)=>{
+   const ar=a.knownRansomwareCampaignUse==="Known"?1:0,br=b.knownRansomwareCampaignUse==="Known"?1:0;
+   return br-ar||new Date(b.dateAdded)-new Date(a.dateAdded);
+  }).slice(0,5);
+  kevNode.innerHTML=top.length?top.map(item=>'<a class="overview-mini-item" href="https://nvd.nist.gov/vuln/detail/'+encodeURIComponent(item.cveID)+'" target="_blank" rel="noopener noreferrer"><span class="overview-mini-main"><b>'+esc(item.cveID)+' · '+esc(item.vulnerabilityName||"Vulnerability record")+'</b><small>'+esc(item.vendorProject||"")+' · '+esc(item.product||"")+' · '+esc(item.dateAdded||"")+'</small></span><span class="overview-mini-badge '+(item.knownRansomwareCampaignUse==="Known"?"priority-critical":"priority-medium")+'">'+(item.knownRansomwareCampaignUse==="Known"?(lang==="ar"?"فدية":"Ransomware"):(lang==="ar"?"مستغلة":"KEV"))+'</span></a>').join(""):'<div class="notice">كتالوج CISA KEV غير متاح حالياً.</div>';
+ }
+ if(iraqNode){
+  const top=iraqAdvisoryItems.slice().sort((a,b)=>String(b.date||"").localeCompare(String(a.date||""))).slice(0,5);
+  iraqNode.innerHTML=top.length?top.map(item=>{
+   const url=String(item.url||"").startsWith("https://")?item.url:"https://ncc.gov.iq/advisories.html";
+   return '<a class="overview-mini-item" href="'+esc(url)+'" target="_blank" rel="noopener noreferrer"><span class="overview-mini-main"><b>'+esc(item.title)+'</b><small>'+esc(item.date||"التاريخ غير محدد")+' · NCC Iraq</small></span><span class="overview-mini-badge priority-medium">NCC</span></a>';
+  }).join(""):'<div class="notice">لا توجد إشعارات عراقية محمّلة حالياً.</div>';
+ }
+}
 function renderThreatStats(items){
  const node=$("globalThreatStats");if(!node)return;
  const data=items.map(classifyAdvisory);
@@ -348,7 +376,7 @@ async function loadGlobalThreats(checkNew=false){
  try{
   const res=await fetch("./data/global-threats.json?ts="+Date.now(),{cache:"no-store"});if(!res.ok)throw new Error("HTTP "+res.status);
   const payload=await res.json();if(!Array.isArray(payload.items)||!payload.items.length)throw new Error("Empty advisory snapshot");
-  globalAdvisoryItems=payload.items.slice(0,30);renderThreatStats(globalAdvisoryItems);renderThreatList();initSourceCoverageMap();
+  globalAdvisoryItems=payload.items.slice(0,30);renderThreatStats(globalAdvisoryItems);renderThreatList();renderOverviewIntel();initSourceCoverageMap();
   state.textContent=lang==="ar"?"متصل":"Connected";updated.textContent=payload.generatedAt?new Date(payload.generatedAt).toLocaleString(lang==="ar"?"ar-IQ":"en-US"):"";
   const ids=globalAdvisoryItems.map(x=>x.url||x.title),previous=JSON.parse(localStorage.getItem("msa-known-advisories")||"null");
   if(previous&&checkNew&&localStorage.getItem("msa-alerts-enabled")==="1"&&"Notification" in window&&Notification.permission==="granted"){
@@ -436,6 +464,7 @@ async function loadIraqAdvisories(){
   const payload=await response.json();
   iraqAdvisoryItems=Array.isArray(payload.items)?payload.items:[];
   renderIraqAdvisories();
+  renderOverviewIntel();
   if(state)state.textContent=iraqAdvisoryItems.length?"متصل / Connected":"لا توجد بيانات / No records";
   if(updated)updated.textContent=payload.generatedAt?new Date(payload.generatedAt).toLocaleString(lang==="ar"?"ar-IQ":"en-US"):"";
   if(!iraqAdvisoryItems.length)list.innerHTML='<div class="notice">لم يتم استخراج إشعارات في آخر تحديث. افتح صفحة المركز الرسمية للتحقق يدوياً. / No advisories were parsed in the latest update; check the official source.</div>';

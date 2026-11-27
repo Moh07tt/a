@@ -76,3 +76,8 @@ A GitHub Actions workflow checks the official NCC Iraq advisories page every six
 ## Passive IOC lookup | فحص مؤشرات التهديد
 
 The IOC Lab validates common public IPv4 addresses, domains and HTTP(S) URLs locally, then opens third-party reputation pages such as VirusTotal, AbuseIPDB, urlscan.io and Google Safe Browsing. It does not scan targets or submit lookups through this project's server. A small watchlist is stored in the visitor's browser `localStorage`; it is not synced between devices and is not an account system. Do not enter private URLs, authentication tokens or personal data.
+
+
+## Overview live intelligence | موجز الصفحة الرئيسية
+
+The overview includes three compact panels: the five highest-scored CISA advisories using the dashboard's heuristic triage score; five recent entries from CISA's Known Exploited Vulnerabilities catalog (prioritizing records marked as associated with ransomware); and five most recent entries from the Iraqi NCC public-advisory snapshot. The KEV list is described as exploited vulnerabilities, not necessarily CVSS-critical. Each panel links to the full relevant section or original public source. The panels update when their corresponding feeds load.

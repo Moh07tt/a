@@ -251,6 +251,7 @@ async function loadKev(){
     $("feedStatus").textContent="● Connected";
     $("cisaState").innerHTML=`<i></i><span>${t("cisaConnected")}</span>`;
     renderTable();
+    loadGlobalThreats();
   }catch(err){
     console.error("KEV feed load failed:",err);
     $("feedStatus").textContent="● Unavailable";
@@ -276,19 +277,19 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape")closeCveModal();});
 function classifyAdvisory(item){
  const raw=(String(item.title||"")+" "+String(item.summary||"")).replace(/<[^>]*>/g," ");
  const text=raw.toLowerCase();
- const cves=[...new Set(raw.match(/CVE-\\d{4}-\\d{4,}/gi)||[])].slice(0,8);
+ const cves=[...new Set(raw.match(/CVE-\d{4}-\d{4,}/gi)||[])].slice(0,8);
  const matches=kevItems.filter(v=>cves.includes(String(v.cveID||"").toUpperCase()));
- const infrastructure=/critical infrastructure|critical manufacturing|energy sector|water and wastewater|transportation systems|industrial control|\\bics\\b|\\bscada\\b|\\bplc\\b|\\bot\\b|power grid|electric utility|oil and gas/i.test(raw);
+ const infrastructure=/critical infrastructure|critical manufacturing|energy sector|water and wastewater|transportation systems|industrial control|\bics\b|\bscada\b|\bplc\b|\bot\b|power grid|electric utility|oil and gas/i.test(raw);
  let category="catGeneral";
- if(/industrial control|\\bics\\b|\\bscada\\b|\\bplc\\b|\\bot\\b|\\bmodbus\\b/i.test(raw))category="catIcs";
+ if(/industrial control|\bics\b|\bscada\b|\bplc\b|\bot\b|\bmodbus\b/i.test(raw))category="catIcs";
  else if(/remote code execution|arbitrary code execution|command injection|code execution/i.test(raw))category="catRce";
  else if(/path traversal|directory traversal/i.test(raw))category="catTraversal";
- else if(/sql injection|xml injection|cross.site scripting|\\bxss\\b|injection vulnerability/i.test(raw))category="catInjection";
+ else if(/sql injection|xml injection|cross.site scripting|\bxss\b|injection vulnerability/i.test(raw))category="catInjection";
  else if(/authentication bypass|improper authentication|missing authentication|hard.coded credentials|privilege escalation|access control/i.test(raw))category="catAuth";
- else if(/denial.of.service|\\bdos\\b|resource exhaustion/i.test(raw))category="catDos";
+ else if(/denial.of.service|\bdos\b|resource exhaustion/i.test(raw))category="catDos";
  else if(/information disclosure|data exposure|sensitive information/i.test(raw))category="catInfo";
  else if(/buffer overflow|memory corruption|use.after.free|heap.based|stack.based/i.test(raw))category="catMemory";
- const scores=[...raw.matchAll(/CVSS(?:[^0-9]{0,35})(10(?:\\.0)?|[0-9]\\.[0-9])/gi)].map(m=>Number(m[1])).filter(n=>n>=0&&n<=10);
+ const scores=[...raw.matchAll(/CVSS(?:[^0-9]{0,35})(10(?:\.0)?|[0-9]\.[0-9])/gi)].map(m=>Number(m[1])).filter(n=>n>=0&&n<=10);
  const score=scores.length?Math.max(...scores):null;
  const severity=score===null?null:score>=9?"sevCritical":score>=7?"sevHigh":score>=4?"sevMedium":"sevLow";
  const ransomware=matches.some(v=>v.knownRansomwareCampaignUse==="Known")||/ransomware|برمجيات الفدية/i.test(raw);
@@ -320,7 +321,7 @@ async function loadGlobalThreats(){
    const d=item.published?new Date(item.published):null;
    const date=d&&!isNaN(d)?d.toLocaleString(lang==="ar"?"ar-IQ":"en-US",{dateStyle:"medium"}):"";
    const url=/^https:\/\//.test(item.url||"")?item.url:"#";
-   const summary=new DOMParser().parseFromString(String(item.summary||""),"text/html").body.textContent.replace(/\\s+/g," ").trim().slice(0,320);
+   const summary=new DOMParser().parseFromString(String(item.summary||""),"text/html").body.textContent.replace(/\s+/g," ").trim().slice(0,320);
    const intel=classifyAdvisory(item);
    const category=translations[lang][intel.category]||translations[lang].catGeneral;
    const severity=intel.severity?translations[lang][intel.severity]:translations[lang].noScore;

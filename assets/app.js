@@ -448,6 +448,47 @@ async function loadIraqAdvisories(){
 $("iraqAdvisorySearch")?.addEventListener("input",renderIraqAdvisories);
 $("iraqAdvisoryFilter")?.addEventListener("change",renderIraqAdvisories);
 
+
+function classifyIoc(value){
+ const v=String(value||"").trim();
+ const ipv4=/^(?:(?:25[0-5]|2[0-4]\\d|1?\\d?\\d)\\.){3}(?:25[0-5]|2[0-4]\\d|1?\\d?\\d)$/;
+ if(ipv4.test(v))return {type:"ip",value:v};
+ if(/^https?:\\/\\//i.test(v)){
+  try{const u=new URL(v);if(!u.hostname||u.username||u.password)throw new Error("invalid");return {type:"url",value:v,host:u.hostname};}catch{return null;}
+ }
+ const domain=/^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\.)+[a-z]{2,63}$/i;
+ if(domain.test(v))return {type:"domain",value:v};
+ return null;
+}
+function renderIocWatchlist(){
+ const node=$("iocWatchlist");if(!node)return;
+ let items=[];try{items=JSON.parse(localStorage.getItem("msa-ioc-watchlist")||"[]");}catch{}
+ if(!items.length){node.innerHTML='<div class="notice">لا توجد مؤشرات محفوظة بعد / No saved indicators yet.</div>';return;}
+ node.innerHTML=items.map((item,index)=>'<div class="ioc-watch-item"><span><b>'+esc(item.value)+'</b><small>'+esc(item.type.toUpperCase())+'</small></span><button type="button" data-ioc-remove="'+index+'" aria-label="Remove indicator">×</button></div>').join("");
+}
+function openIocLookups(){
+ const input=$("iocInput"),result=$("iocResult");if(!input||!result)return;
+ const item=classifyIoc(input.value);
+ if(!item){result.innerHTML='<b>صيغة غير صحيحة / Invalid format</b><span>أدخل IPv4 أو نطاقاً عاماً أو رابط HTTP(S) صحيحاً.</span>';return;}
+ let links=[];
+ if(item.type==="ip"){
+  links=[["VirusTotal","https://www.virustotal.com/gui/ip-address/"+encodeURIComponent(item.value)],["AbuseIPDB","https://www.abuseipdb.com/check/"+encodeURIComponent(item.value)],["URLhaus","https://urlhaus.abuse.ch/browse/"]];
+ }else if(item.type==="domain"){
+  links=[["VirusTotal","https://www.virustotal.com/gui/domain/"+encodeURIComponent(item.value)],["urlscan.io","https://urlscan.io/search/#domain:"+encodeURIComponent(item.value)],["URLhaus","https://urlhaus.abuse.ch/browse/"]];
+ }else{
+  links=[["VirusTotal","https://www.virustotal.com/gui/home/url"],["urlscan.io","https://urlscan.io/"],["Google Safe Browsing","https://transparencyreport.google.com/safe-browsing/search?url="+encodeURIComponent(item.value)]];
+ }
+ result.innerHTML='<b>'+esc(item.type.toUpperCase())+': '+esc(item.value)+'</b><span>تم التحقق من الصيغة محلياً. افتح مزودي السمعة أدناه لإجراء البحث لديهم؛ لم يتم تنفيذ فحص أو إرسال بيانات إلى موقعنا.</span><div class="ioc-provider-links">'+links.map(([name,url])=>'<a href="'+esc(url)+'" target="_blank" rel="noopener noreferrer">'+esc(name)+' ↗</a>').join("")+'</div>';
+ let items=[];try{items=JSON.parse(localStorage.getItem("msa-ioc-watchlist")||"[]");}catch{}
+ if(!items.some(x=>x.value===item.value)){items.unshift(item);items=items.slice(0,30);localStorage.setItem("msa-ioc-watchlist",JSON.stringify(items));}
+ renderIocWatchlist();
+}
+$("iocLookupBtn")?.addEventListener("click",openIocLookups);
+$("iocInput")?.addEventListener("keydown",e=>{if(e.key==="Enter")openIocLookups();});
+$("iocClearBtn")?.addEventListener("click",()=>{localStorage.removeItem("msa-ioc-watchlist");renderIocWatchlist();});
+$("iocWatchlist")?.addEventListener("click",e=>{const b=e.target.closest("[data-ioc-remove]");if(!b)return;let items=[];try{items=JSON.parse(localStorage.getItem("msa-ioc-watchlist")||"[]");}catch{}items.splice(Number(b.dataset.iocRemove),1);localStorage.setItem("msa-ioc-watchlist",JSON.stringify(items));renderIocWatchlist();});
+renderIocWatchlist();
+
 applyLanguage();
 loadGlobalThreats();
 loadIraqAdvisories();

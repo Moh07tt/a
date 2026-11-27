@@ -1,0 +1,29 @@
+name: Refresh Iraq cyber advisories
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "23 */6 * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Collect official NCC Iraq advisories
+        run: python3 scripts/fetch_iraq_advisories.py
+      - name: Commit updated public snapshot
+        run: |
+          if git diff --quiet -- data/iraq-watch.json; then
+            echo "No Iraq advisory changes."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/iraq-watch.json
+          git commit -m "Refresh official Iraq cyber advisories"
+          git push

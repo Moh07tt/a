@@ -402,8 +402,8 @@ let iraqAdvisoryItems=[];
 function classifyIraqAdvisory(item){
  const text=String(item.title||"");
  const cves=[...new Set(text.match(/CVE-\\d{4}-\\d{4,}/gi)||[])];
- const critical=/حرج|critical|actively exploited|استغلال نشط|remote code execution|تنفيذ تعليمات برمجية عن بُعد/i.test(text);
- const high=critical||/مرتفع|high|استغلال فعلي|actively exploited|authentication bypass|تجاوز المصادقة/i.test(text);
+ const critical=/حرج|critical|استغلال نشط|actively exploited/i.test(text);
+ const high=critical||/مرتفع|high|استغلال فعلي|remote code execution|تنفيذ تعليمات برمجية|authentication bypass|تجاوز المصادقة/i.test(text);
  return {cves,level:critical?"critical":high?"high":"advisory"};
 }
 function renderIraqAdvisories(){

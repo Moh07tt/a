@@ -14,7 +14,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css?v=8">
+  <link rel="stylesheet" href="assets/style.css?v=9">
 </head>
 <body>
   <div class="app-shell">
@@ -77,8 +77,8 @@
             <div><span class="eyebrow" data-i18n="exposureWatch">EXPOSURE WATCH</span><h2 data-i18n="exploitedVulnerabilities">Known exploited vulnerabilities</h2><p data-i18n="exploitedDescription">Vulnerabilities listed by CISA as exploited in the wild.</p></div>
             <a class="text-link" href="https://www.cisa.gov/known-exploited-vulnerabilities-catalog" target="_blank" rel="noreferrer" data-i18n="openCisa">Open CISA ↗</a>
           </div>
-          <div class="table-tools"><label class="search-box"><span>⌕</span><input id="searchInput" type="search" placeholder="Search CVE, vendor or product…" data-i18n-placeholder="searchPlaceholder"></label><select id="vendorFilter" aria-label="Filter vendor"><option value="" data-i18n="allVendors">All vendors</option></select><span class="result-count" id="resultCount">—</span></div>
-          <div class="table-wrap"><table><thead><tr><th data-i18n="cveId">CVE ID</th><th data-i18n="vendorProduct">VENDOR / PRODUCT</th><th data-i18n="vulnerabilityName">VULNERABILITY</th><th data-i18n="dateAdded">DATE ADDED</th><th data-i18n="dueDate">DUE DATE</th></tr></thead><tbody id="kevTable"><tr><td colspan="5" class="loading-cell"><span class="spinner"></span><span data-i18n="loadingIntel">Loading intelligence feed…</span></td></tr></tbody></table></div>
+          <div class="table-tools"><label class="search-box"><span>⌕</span><input id="searchInput" type="search" placeholder="Search CVE, vendor or product…" data-i18n-placeholder="searchPlaceholder"></label><select id="vendorFilter" aria-label="Filter vendor"><option value="" data-i18n="allVendors">All vendors</option></select><select id="ransomwareFilter" aria-label="Filter ransomware use"><option value="" data-i18n="allCampaigns">All campaign indicators</option><option value="Known" data-i18n="ransomwareYes">Ransomware: Yes</option><option value="Unknown" data-i18n="ransomwareNo">Ransomware: Not reported</option></select><span class="result-count" id="resultCount">—</span></div>
+          <div class="table-wrap"><table><thead><tr><th data-i18n="cveId">CVE ID</th><th data-i18n="vendorProduct">VENDOR / PRODUCT</th><th data-i18n="vulnerabilityName">VULNERABILITY</th><th data-i18n="dateAdded">DATE ADDED</th><th data-i18n="dueDate">DUE DATE</th><th data-i18n="ransomwareUse">RANSOMWARE USE</th><th data-i18n="requiredAction">REQUIRED ACTION</th></tr></thead><tbody id="kevTable"><tr><td colspan="7" class="loading-cell"><span class="spinner"></span><span data-i18n="loadingIntel">Loading intelligence feed…</span></td></tr></tbody></table></div>
           <div class="panel-footer"><span id="tableFootnote" data-i18n="cisaFootnote">Source: CISA Known Exploited Vulnerabilities catalog.</span><span id="feedStatus" class="feed-status">● Connecting</span></div>
         </section>
 
@@ -120,7 +120,7 @@
     </main>
   </div>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
-  <script src="assets/app.js?v=4"></script>
+  <script src="assets/app.js?v=5"></script>
   <script data-goatcounter="https://mohammedalsafi.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
   <script>
     (function () {

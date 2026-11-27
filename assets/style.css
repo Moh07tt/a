@@ -228,3 +228,15 @@ html[dir="rtl"] .cve-reference-list{padding-left:0;padding-right:18px}
 .overview-intel-disclaimer{font-size:9px;line-height:1.7;color:#8297b0;margin:12px 2px}
 @media(max-width:900px){.overview-intel-grid{grid-template-columns:1fr 1fr}.overview-intel-card:last-child{grid-column:1/-1}}
 @media(max-width:600px){.overview-intel-grid{grid-template-columns:1fr}.overview-intel-card:last-child{grid-column:auto}.overview-intel-card{padding:13px}.overview-intel-card-head h3{font-size:12px}.overview-mini-main b{font-size:10px}.overview-intel-heading h2{font-size:17px}}
+
+.remediation-section{border:1px solid #2b4965;border-radius:9px;padding:14px;background:#0d1a2a;margin:16px 0}
+.remediation-section h3{color:#f0cf87}.remediation-section ul{padding-inline-start:22px;line-height:1.8}.remediation-section li{margin:7px 0;color:#c5d3e4;font-size:12px}
+.intel-card-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:12px}.intel-card-actions a{font-size:10px;color:#8fc4ff;text-decoration:none}
+.intel-card-actions button,.saved-intel-actions button{border:1px solid #31506e;background:#112943;color:#a9d0f8;border-radius:6px;padding:6px 10px;font:inherit;font-size:10px;cursor:pointer}
+.overview-saved-wrap{margin-top:16px;padding:14px;border:1px solid #263d55;border-radius:10px;background:#0c1827}
+.overview-saved-list{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.saved-intel-item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px;border:1px solid #26394f;border-radius:7px;background:#101f31;min-width:0}
+.saved-intel-item>div:first-child{min-width:0}.saved-intel-item b,.saved-intel-item small,.saved-intel-type{display:block;overflow-wrap:anywhere}
+.saved-intel-item b{font-size:10px;color:#e0eaf7;line-height:1.6}.saved-intel-item small{font-size:8px;color:#879bb3;margin-top:3px}.saved-intel-type{font-size:8px;color:#8ec4ff;margin-bottom:4px}
+.saved-intel-actions{display:flex;align-items:center;gap:6px;flex:0 0 auto}.saved-intel-actions a{color:#8fc4ff;text-decoration:none}.saved-intel-actions button{padding:3px 8px}
+@media(max-width:600px){.overview-saved-list{grid-template-columns:1fr}.intel-card-actions{gap:9px}}

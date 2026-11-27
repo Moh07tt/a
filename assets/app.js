@@ -273,7 +273,7 @@ async function loadGlobalThreats(){
 }
 $("cveQuickOpen").addEventListener("click",()=>{
  const id=$("cveQuickSearch").value.trim().toUpperCase();
- if(/^CVE-\\d{4}-\\d{4,}$/.test(id))showCveDetails(id);
+ if(/^CVE-\d{4}-\d{4,}$/.test(id))showCveDetails(id);
  else showToast(lang==="ar"?"أدخل معرّف CVE صحيحاً":"Enter a valid CVE identifier");
 });
 $("cveQuickSearch").addEventListener("keydown",e=>{if(e.key==="Enter")$("cveQuickOpen").click();});

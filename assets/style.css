@@ -131,3 +131,24 @@ html[dir="rtl"] .cve-reference-list{padding-left:0;padding-right:18px}
 .intel-small-note{font-size:9px;line-height:1.6;color:#8093aa;margin:14px 0 0}
 #openKevTab{margin-top:15px}
 @media(max-width:720px){.intel-feed-list,.intel-summary-grid{grid-template-columns:1fr}.cve-lookup{align-items:stretch;flex-direction:column}.cve-lookup .search-box{width:100%}.cve-lookup button{width:100%}}
+
+/* Threat classification and prioritization */
+.intel-stats-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin:14px 0}
+.intel-stat{min-width:0;padding:11px;background:#101f31;border:1px solid #26394f;border-radius:8px}
+.intel-stat b,.intel-stat span{display:block}
+.intel-stat b{font-size:20px;color:#e8f2ff}
+.intel-stat span{font-size:9px;line-height:1.5;color:#91a6bf;margin-top:4px}
+.intel-tags{display:flex;flex-wrap:wrap;gap:5px;margin:9px 0}
+.intel-tag{font-size:9px;line-height:1.4;border-radius:5px;padding:4px 7px;background:#243448;color:#b8cbe0;border:1px solid #354b65}
+.tag-category{background:#172f4a;color:#9dcfff;border-color:#2b5278}
+.tag-infra{background:#3c3020;color:#ffd18a;border-color:#70532b}
+.tag-kev{background:#48252e;color:#ffb2bd;border-color:#713845}
+.severity-critical{background:#582632;color:#ff9aa7;border-color:#82404d}
+.severity-high{background:#59391f;color:#ffc28c;border-color:#80532d}
+.severity-medium{background:#4b4523;color:#f3d58b;border-color:#6f642d}
+.severity-low{background:#1e473d;color:#8ce1c4;border-color:#2b6656}
+.intel-enrichment,.intel-products{margin:8px 0;padding:8px 9px;background:#0a1523;border:1px solid #22364c;border-radius:6px}
+.intel-enrichment small,.intel-products small{display:block;font-size:9px;color:#8da4be;margin-bottom:5px}
+.intel-enrichment a{display:inline-block;margin:2px 7px 2px 0;color:#8fc4ff;font-size:10px;text-decoration:none}
+.intel-products span{font-size:10px;color:#c0cede;line-height:1.5}
+@media(max-width:720px){.intel-stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.intel-stat{padding:9px}.intel-stat b{font-size:18px}}

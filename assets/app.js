@@ -338,7 +338,15 @@ function classifyAdvisory(item){
 }
 function ensureOverviewIntelMarkup(){
  let section=$("overviewIntelSection");
- if(section)return section;
+ if(section){
+  if(!$("overviewSavedIntel")){
+   const saved=document.createElement("div");
+   saved.className="overview-saved-wrap";
+   saved.innerHTML='<div class="overview-intel-card-head"><div><span class="eyebrow">SAVED INTELLIGENCE</span><h3>قائمة التهديدات والثغرات المحفوظة / Saved intelligence</h3></div></div><div id="overviewSavedIntel" class="overview-saved-list"></div>';
+   section.appendChild(saved);
+  }
+  return section;
+ }
  const stats=document.querySelector('[data-tab-panel="overview"] .stats-grid');
  if(!stats)return null;
  section=document.createElement("section");

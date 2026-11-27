@@ -240,3 +240,25 @@ html[dir="rtl"] .cve-reference-list{padding-left:0;padding-right:18px}
 .saved-intel-item b{font-size:10px;color:#e0eaf7;line-height:1.6}.saved-intel-item small{font-size:8px;color:#879bb3;margin-top:3px}.saved-intel-type{font-size:8px;color:#8ec4ff;margin-bottom:4px}
 .saved-intel-actions{display:flex;align-items:center;gap:6px;flex:0 0 auto}.saved-intel-actions a{color:#8fc4ff;text-decoration:none}.saved-intel-actions button{padding:3px 8px}
 @media(max-width:600px){.overview-saved-list{grid-template-columns:1fr}.intel-card-actions{gap:9px}}
+
+
+/* Authoritative tab visibility: only the selected dashboard panel may render. */
+body[data-active-tab="overview"] .tab-panel[data-tab-panel="overview"],
+body[data-active-tab="vulnerabilities"] .tab-panel[data-tab-panel="vulnerabilities"],
+body[data-active-tab="alerts"] .tab-panel[data-tab-panel="alerts"],
+body[data-active-tab="sources"] .tab-panel[data-tab-panel="sources"],
+body[data-active-tab="iraq-watch"] .tab-panel[data-tab-panel="iraq-watch"],
+body[data-active-tab="methodology"] .tab-panel[data-tab-panel="methodology"],
+body[data-active-tab="global-threats"] .tab-panel[data-tab-panel="global-threats"],
+body[data-active-tab="ioc-lab"] .tab-panel[data-tab-panel="ioc-lab"],
+body[data-active-tab="cve-intelligence"] .tab-panel[data-tab-panel="cve-intelligence"] { display:block !important; }
+body[data-active-tab] .tab-panel[data-tab-panel] { display:none !important; }
+body[data-active-tab="overview"] .tab-panel[data-tab-panel="overview"],
+body[data-active-tab="vulnerabilities"] .tab-panel[data-tab-panel="vulnerabilities"],
+body[data-active-tab="alerts"] .tab-panel[data-tab-panel="alerts"],
+body[data-active-tab="sources"] .tab-panel[data-tab-panel="sources"],
+body[data-active-tab="iraq-watch"] .tab-panel[data-tab-panel="iraq-watch"],
+body[data-active-tab="methodology"] .tab-panel[data-tab-panel="methodology"],
+body[data-active-tab="global-threats"] .tab-panel[data-tab-panel="global-threats"],
+body[data-active-tab="ioc-lab"] .tab-panel[data-tab-panel="ioc-lab"],
+body[data-active-tab="cve-intelligence"] .tab-panel[data-tab-panel="cve-intelligence"] { display:block !important; }

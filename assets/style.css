@@ -21,3 +21,11 @@ html[dir="rtl"] button,
 html[dir="rtl"] textarea {
   font-family: "Cairo", sans-serif !important;
 }
+
+/* Threat intelligence enrichment */
+#ransomwareFilter{background:#0c1725;border:1px solid #2a3a50;border-radius:6px;color:#a9bad0;padding:8px 10px;font-size:10px;max-width:210px}
+.intel-tag{display:inline-block;border-radius:5px;padding:4px 7px;font-size:9px;white-space:nowrap}
+.tag-warning{background:#5a3520;color:#ffd09a;border:1px solid #80502c}
+.tag-muted{background:#243448;color:#a7b7ca}
+.action-cell{min-width:220px;max-width:360px;line-height:1.55;color:#aebed2}
+@media(max-width:720px){#ransomwareFilter{flex:1;max-width:none}}

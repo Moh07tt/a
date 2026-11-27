@@ -452,7 +452,7 @@ $("iraqAdvisoryFilter")?.addEventListener("change",renderIraqAdvisories);
 function classifyIoc(value){
  const v=String(value||"").trim();
  const parts=v.split(".");
- const isIp=parts.length===4&&parts.every(part=>/^\\d{1,3}$/.test(part)&&Number(part)>=0&&Number(part)<=255);
+ const isIp=parts.length===4&&parts.every(part=>/^[0-9]{1,3}$/.test(part)&&Number(part)>=0&&Number(part)<=255);
  if(isIp)return {type:"ip",value:v};
  if(v.toLowerCase().startsWith("http://")||v.toLowerCase().startsWith("https://")){
   try{const u=new URL(v);if(!u.hostname||u.username||u.password)throw new Error("invalid");return {type:"url",value:v,host:u.hostname};}catch{return null;}
@@ -494,5 +494,5 @@ applyLanguage();
 loadGlobalThreats();
 loadIraqAdvisories();
 const initialTab=location.hash.slice(1);
-setActiveTab(["overview","vulnerabilities","alerts","global-threats","cve-intelligence","sources","iraq-watch","methodology"].includes(initialTab)?initialTab:"overview");
+setActiveTab(["overview","vulnerabilities","alerts","global-threats","cve-intelligence","ioc-lab","sources","iraq-watch","methodology"].includes(initialTab)?initialTab:"overview");
 loadKev();

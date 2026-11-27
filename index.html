@@ -14,7 +14,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""><link rel="stylesheet" href="assets/style.css?v=24">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""><link rel="stylesheet" href="assets/style.css?v=19">
 </head>
 <body>
   <div class="app-shell">
@@ -86,15 +86,6 @@
           <article class="stat-card"><div class="stat-top"><span data-i18n="criticalItems">Critical severity</span><span class="stat-icon orange">◆</span></div><strong id="criticalCount">—</strong><small data-i18n="fromLoadedCves">From loaded CVE records</small></article>
           <article class="stat-card"><div class="stat-top"><span data-i18n="dataSources">Linked sources</span><span class="stat-icon green">◎</span></div><strong id="sourceCount">4</strong><small data-i18n="publicSources">Sources listed in this dashboard</small></article>
         </div>
-        <section class="overview-intel-section" aria-labelledby="overviewIntelTitle">
-          <div class="overview-intel-heading"><div><span class="eyebrow">LIVE INTELLIGENCE / موجز استخباراتي</span><h2 id="overviewIntelTitle">أهم المستجدات السيبرانية / Top intelligence</h2><p>ملخص سريع من البيانات العامة المحمّلة في لوحة المتابعة.</p></div></div>
-          <div class="overview-intel-grid">
-            <article class="overview-intel-card"><div class="overview-intel-card-head"><div><span class="eyebrow">GLOBAL THREATS</span><h3>أهم 5 تهديدات عالمية</h3></div><button class="overview-more" type="button" data-tab="global-threats">عرض الكل ↗</button></div><div id="overviewTopThreats" class="overview-mini-list"><a class="overview-mini-item" href="https://www.cisa.gov/news-events/alerts/2026/11/25/cisa-adds-10-known-exploited-vulnerabilities-catalog" target="_blank" rel="noopener noreferrer"><span class="overview-mini-main"><b>CISA Adds 10 Known Exploited Vulnerabilities to Catalog</b><small>Wed, 25 Nov 26 12:00:00 +0000</small></span><span class="overview-mini-badge priority-medium">CISA</span></a><a class="overview-mini-item" href="https://www.cisa.gov/news-events/ics-advisories/icsa-26-328-01" target="_blank" rel="noopener noreferrer"><span class="overview-mini-main"><b>AutomationDirect C-More EA9 Programming Software</b><small>Tue, 24 Nov 26 12:00:00 +0000</small></span><span class="overview-mini-badge priority-medium">CISA</span></a><a class="overview-mini-item" href="https://www.cisa.gov/news-events/alerts/2026/11/24/cisa-adds-three-known-exploited-vulnerabilities-catalog" target="_blank" rel="noopener noreferrer"><span class="overview-mini-main"><b>CISA Adds Three Known Exploited Vulnerabilities to Catalog</b><small>Tue, 24 Nov 26 12:00:00 +0000</small></span><span class="overview-mini-badge priority-medium">CISA</span></a><a class="overview-mini-item" href="https://www.cisa.gov/news-events/ics-advisories/icsa-26-328-02" target="_blank" rel="noopener noreferrer"><span class="overview-mini-main"><b>Schneider Electric EcoStruxure Power Build Rapsody software</b><small>Tue, 24 Nov 26 12:00:00 +0000</small></span><span class="overview-mini-badge priority-medium">CISA</span></a><a class="overview-mini-item" href="https://www.cisa.gov/news-events/ics-advisories/icsa-26-328-03" target="_blank" rel="noopener noreferrer"><span class="overview-mini-main"><b>Danfoss AK-SM 8xxA Series</b><small>Tue, 24 Nov 26 12:00:00 +0000</small></span><span class="overview-mini-badge priority-medium">CISA</span></a></div></div></article>
-            <article class="overview-intel-card"><div class="overview-intel-card-head"><div><span class="eyebrow">CISA KEV CATALOG</span><h3>أبرز 5 ثغرات مستغلة</h3></div><button class="overview-more" type="button" data-tab="vulnerabilities">عرض الكل ↗</button></div><div id="overviewTopKeV" class="overview-mini-list"><a class="overview-mini-item" href="https://nvd.nist.gov/vuln/detail/CVE-2026-103406" target="_blank" rel="noopener noreferrer"><span class="overview-mini-main"><b>CVE-2026-103406 · Hewlett Packard Enterprise (HPE) Juniper Session Smart Conductor and Session Smart Router OS Command Injection Vulnerability</b><small>Hewlett Packard Enterprise (HPE) · Juniper Session Smart Conductor and Session Smart Router · 2026-11-25</small></span><span class="overview-mini-badge priority-medium">KEV</span></a><a class="overview-mini-item" href="https://nvd.nist.gov/vuln/detail/CVE-2026-133469" target="_blank" rel="noopener noreferrer"><span class="overview-mini-main"><b>CVE-2026-133469 · Vates Xen Orchestra Improper Validation of Specified Type of Input Vulnerability</b><small>Vates · Xen Orchestra · 2026-11-25</small></span><span class="overview-mini-badge priority-medium">KEV</span></a><a class="overview-mini-item" href="https://nvd.nist.gov/vuln/detail/CVE-2025-41450" target="_blank" rel="noopener noreferrer"><span class="overview-mini-main"><b>CVE-2025-41450 · Danfoss AK-SM 800A Series Improper Authentication Vulnerability</b><small>Danfoss · AK-SM 800A Series · 2026-11-25</small></span><span class="overview-mini-badge priority-medium">KEV</span></a><a class="overview-mini-item" href="https://nvd.nist.gov/vuln/detail/CVE-2023-25914" target="_blank" rel="noopener noreferrer"><span class="overview-mini-main"><b>CVE-2023-25914 · Danfoss AK-SM 800A Series Path Traversal Vulnerability</b><small>Danfoss · AK-SM 800A Series · 2026-11-25</small></span><span class="overview-mini-badge priority-medium">KEV</span></a><a class="overview-mini-item" href="https://nvd.nist.gov/vuln/detail/CVE-2023-25915" target="_blank" rel="noopener noreferrer"><span class="overview-mini-main"><b>CVE-2023-25915 · Danfoss AK-SM 800A Series Improper Input Validation Vulnerability</b><small>Danfoss · AK-SM 800A Series · 2026-11-25</small></span><span class="overview-mini-badge priority-medium">KEV</span></a></div></div></article>
-            <article class="overview-intel-card"><div class="overview-intel-card-head"><div><span class="eyebrow">IRAQ CYBER WATCH</span><h3>آخر 5 إشعارات عراقية</h3></div><button class="overview-more" type="button" data-tab="iraq-watch">عرض الكل ↗</button></div><div id="overviewIraqUpdates" class="overview-mini-list"><a class="overview-mini-item" href="https://ncc.gov.iq/advisories.html" target="_blank" rel="noopener noreferrer"><span class="overview-mini-main"><b>تحديثات أمنية لمعالجة عشر ثغرات في Node.js، منها ثغرة قد تتيح تنفيذ تعليمات برمجية عن بُعد</b><small>2026-10-22</small></span><span class="overview-mini-badge priority-medium">NCC</span></a><a class="overview-mini-item" href="https://ncc.gov.iq/advisories.html" target="_blank" rel="noopener noreferrer"><span class="overview-mini-main"><b>ثغرتان حرجتان في محرك PHP تتيحان تنفيذ تعليمات برمجية عن بُعد دون مصادقة</b><small>2026-10-22</small></span><span class="overview-mini-badge priority-medium">NCC</span></a><a class="overview-mini-item" href="https://ncc.gov.iq/advisories.html" target="_blank" rel="noopener noreferrer"><span class="overview-mini-main"><b>استغلال نشط لثغرة حرجة تتيح رفع ملفات PHP وتنفيذها دون مصادقة في إضافة Bricksforge</b><small>2026-10-12</small></span><span class="overview-mini-badge priority-medium">NCC</span></a><a class="overview-mini-item" href="https://ncc.gov.iq/advisories.html" target="_blank" rel="noopener noreferrer"><span class="overview-mini-main"><b>ثغرة حرجة في F5 BIG-IP APM تتيح تنفيذ تعليمات برمجية عن بُعد دون مصادقة</b><small>2026-09-24</small></span><span class="overview-mini-badge priority-medium">NCC</span></a><a class="overview-mini-item" href="https://ncc.gov.iq/advisories.html" target="_blank" rel="noopener noreferrer"><span class="overview-mini-main"><b>ثغرة حرجة في WordPress Core تتيح تضمين ملفات PHP محلية وقد تؤدي إلى تنفيذ تعليمات برمجية عن بُعد</b><small>2026-09-23</small></span><span class="overview-mini-badge priority-medium">NCC</span></a></div></div></article>
-          </div>
-          <p class="overview-intel-disclaimer">المعلومات مقتبسة من موجزات ومصادر منشورة؛ ترتيب الأولوية آلي للمساعدة في الفرز ولا يمثل تأكيداً بوقوع اختراق. / Published-source summary; priority ranking is triage assistance, not confirmation of a breach.</p>
-        </section>
         </div>
 
         <div class="tab-panel" data-tab-panel="vulnerabilities"><section id="vulnerabilities" class="panel">
@@ -151,114 +142,7 @@
   </section>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-  <script src="assets/app.js?v=33"></script>
-<script>
-(function(){
- const tabs=["overview","vulnerabilities","alerts","sources","iraq-watch","methodology","global-threats","ioc-lab","cve-intelligence"];
- function activate(id){
-  if(!tabs.includes(id))id="overview";
-  document.body.setAttribute("data-active-tab",id);
-  document.querySelectorAll(".section-tab[data-tab]").forEach(b=>{
-   const on=b.dataset.tab===id;b.classList.toggle("active",on);b.setAttribute("aria-selected",String(on));
-  });
-  document.querySelectorAll(".tab-panel[data-tab-panel]").forEach(p=>{
-   const on=p.dataset.tabPanel===id;
-   p.classList.toggle("active",on);p.hidden=!on;p.setAttribute("aria-hidden",String(!on));
-  });
- }
- document.addEventListener("click",e=>{
-  const b=e.target.closest("[data-tab]");
-  if(!b)return;
-  const id=b.dataset.tab;if(!tabs.includes(id))return;
-  e.preventDefault();e.stopImmediatePropagation();activate(id);
-  history.replaceState(null,"","#"+id);
- },true);
- function init(){activate((location.hash||"").slice(1)||"overview");}
- if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init,{once:true});else init();
- window.addEventListener("hashchange",init);
-})();
-</script>
-<script>
-(function(){
- const allowed=["overview","vulnerabilities","alerts","global-threats","cve-intelligence","ioc-lab","sources","iraq-watch","methodology"];
- function show(name,scroll){
-  const active=allowed.includes(name)?name:"overview";
-  document.querySelectorAll(".tab-panel[data-tab-panel]").forEach(panel=>{
-   const on=panel.getAttribute("data-tab-panel")===active;
-   panel.hidden=!on;panel.classList.toggle("active",on);
-   panel.style.setProperty("display",on?"block":"none","important");
-   panel.setAttribute("aria-hidden",on?"false":"true");
-  });
-  document.querySelectorAll(".section-tab[data-tab]").forEach(button=>{
-   const on=button.getAttribute("data-tab")===active;
-   button.classList.toggle("active",on);button.setAttribute("aria-selected",on?"true":"false");
-  });
-  document.querySelectorAll(".sidebar .nav-link").forEach(link=>link.classList.toggle("active",link.getAttribute("href")==="#"+active));
-  if(location.hash!=="#"+active)history.replaceState(null,"","#"+active);
-  if(scroll)window.scrollTo({top:0,behavior:"auto"});
- }
- document.addEventListener("click",function(event){
-  const control=event.target.closest("[data-tab],.sidebar .nav-link");if(!control)return;
-  const name=control.hasAttribute("data-tab")?control.getAttribute("data-tab"):(control.getAttribute("href")||"").slice(1);
-  if(!allowed.includes(name))return;
-  event.preventDefault();event.stopImmediatePropagation();show(name,true);
- },true);
- function init(){show((location.hash||"").slice(1),false);}
- if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init,{once:true});else init();
- window.addEventListener("hashchange",init);
-})();
-</script>
-<script>
-/* Independent fail-safe for the three Overview intelligence cards.
-   This runs even if the main dashboard script encounters a runtime error. */
-(function(){
-  const $id=id=>document.getElementById(id);
-  const timeoutFetch=async(url,ms=12000)=>{
-    const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),ms);
-    try{const response=await fetch(url,{cache:"no-store",signal:controller.signal});if(!response.ok)throw new Error("HTTP "+response.status);return await response.json();}
-    finally{clearTimeout(timer);}
-  };
-  const clear=node=>{if(node)node.replaceChildren();};
-  const notice=(node,message)=>{if(!node)return;clear(node);const p=document.createElement("div");p.className="notice";p.textContent=message;node.appendChild(p);};
-  const addRow=(node,title,meta,url,badge)=>{
-    const a=document.createElement("a");a.className="overview-mini-item";a.href=url;a.target="_blank";a.rel="noopener noreferrer";
-    const main=document.createElement("span");main.className="overview-mini-main";
-    const b=document.createElement("b");b.textContent=title;
-    const small=document.createElement("small");small.textContent=meta||"";
-    main.append(b,small);
-    const tag=document.createElement("span");tag.className="overview-mini-badge priority-medium";tag.textContent=badge;
-    a.append(main,tag);node.appendChild(a);
-  };
-  async function run(){
-    const threats=$id("overviewTopThreats"),kev=$id("overviewTopKeV"),iraq=$id("overviewIraqUpdates");
-    try{
-      const p=await timeoutFetch("./data/global-threats.json?fallback="+Date.now());
-      const items=Array.isArray(p.items)?p.items:[];
-      clear(threats);
-      items.slice(0,5).forEach(x=>addRow(threats,x.title||"Untitled advisory",(x.published||"")+" · CISA",String(x.url||"").startsWith("https://")?x.url:"https://www.cisa.gov/news-events/cybersecurity-advisories","CISA"));
-      if(!items.length)notice(threats,"لا توجد تهديدات منشورة في ملف البيانات حالياً.");
-    }catch(e){notice(threats,"تعذر تحميل التهديدات العالمية. تحقق من الاتصال ثم أعد المحاولة.");}
-    try{
-      let payload=null;
-      for(const url of ["./data/kev.json?fallback="+Date.now(),"https://cdn.jsdelivr.net/gh/CISAGov/kev-data@develop/known_exploited_vulnerabilities.json","https://raw.githubusercontent.com/CISAGov/kev-data/develop/known_exploited_vulnerabilities.json","https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json"]){
-        try{const x=await timeoutFetch(url);if(Array.isArray(x.vulnerabilities)&&x.vulnerabilities.length){payload=x;break;}}catch(e){}
-      }
-      const items=payload?.vulnerabilities||[];
-      clear(kev);
-      items.slice().sort((a,b)=>String(b.dateAdded||"").localeCompare(String(a.dateAdded||""))).slice(0,5).forEach(x=>addRow(kev,(x.cveID||"CVE")+" · "+(x.vulnerabilityName||"Vulnerability"),[x.vendorProject,x.product,x.dateAdded].filter(Boolean).join(" · "),"https://nvd.nist.gov/vuln/detail/"+encodeURIComponent(x.cveID||""),"KEV"));
-      if(!items.length)notice(kev,"تعذر الوصول إلى كتالوج CISA KEV حالياً.");
-    }catch(e){notice(kev,"تعذر تحميل كتالوج الثغرات. تحقق من الاتصال ثم أعد المحاولة.");}
-    try{
-      const p=await timeoutFetch("./data/iraq-watch.json?fallback="+Date.now());
-      const items=Array.isArray(p.items)?p.items:[];
-      clear(iraq);
-      items.slice(0,5).forEach(x=>addRow(iraq,x.title||"إشعار عراقي",x.date||"NCC Iraq",String(x.url||"").startsWith("https://")?x.url:"https://ncc.gov.iq/advisories.html","NCC"));
-      if(!items.length)notice(iraq,"لا توجد إشعارات عراقية في آخر نسخة منشورة.");
-    }catch(e){notice(iraq,"تعذر تحميل الإشعارات العراقية. افتح المصدر الرسمي للتحقق.");}
-  }
-  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",run,{once:true});else run();
-})();
-</script>
+  <script src="assets/app.js?v=22"></script>
   <script data-goatcounter="https://mohammedalsafi.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
   <script>
     (function () {

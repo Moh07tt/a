@@ -153,6 +153,36 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <script src="assets/app.js?v=33"></script>
 <script>
+(function(){
+ const allowed=["overview","vulnerabilities","alerts","global-threats","cve-intelligence","ioc-lab","sources","iraq-watch","methodology"];
+ function show(name,scroll){
+  const active=allowed.includes(name)?name:"overview";
+  document.querySelectorAll(".tab-panel[data-tab-panel]").forEach(panel=>{
+   const on=panel.getAttribute("data-tab-panel")===active;
+   panel.hidden=!on;panel.classList.toggle("active",on);
+   panel.style.setProperty("display",on?"block":"none","important");
+   panel.setAttribute("aria-hidden",on?"false":"true");
+  });
+  document.querySelectorAll(".section-tab[data-tab]").forEach(button=>{
+   const on=button.getAttribute("data-tab")===active;
+   button.classList.toggle("active",on);button.setAttribute("aria-selected",on?"true":"false");
+  });
+  document.querySelectorAll(".sidebar .nav-link").forEach(link=>link.classList.toggle("active",link.getAttribute("href")==="#"+active));
+  if(location.hash!=="#"+active)history.replaceState(null,"","#"+active);
+  if(scroll)window.scrollTo({top:0,behavior:"auto"});
+ }
+ document.addEventListener("click",function(event){
+  const control=event.target.closest("[data-tab],.sidebar .nav-link");if(!control)return;
+  const name=control.hasAttribute("data-tab")?control.getAttribute("data-tab"):(control.getAttribute("href")||"").slice(1);
+  if(!allowed.includes(name))return;
+  event.preventDefault();event.stopImmediatePropagation();show(name,true);
+ },true);
+ function init(){show((location.hash||"").slice(1),false);}
+ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init,{once:true});else init();
+ window.addEventListener("hashchange",init);
+})();
+</script>
+<script>
 /* Independent fail-safe for the three Overview intelligence cards.
    This runs even if the main dashboard script encounters a runtime error. */
 (function(){

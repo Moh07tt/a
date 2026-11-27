@@ -79,6 +79,30 @@ function renderTable(){
   </tr>`).join("");
 }
 
+function setActiveTab(name){
+  const allowed=["overview","vulnerabilities","alerts","sources","iraq-watch","methodology"];
+  const active=allowed.includes(name)?name:"overview";
+  document.querySelectorAll("[data-tab-panel]").forEach(panel=>{
+    panel.classList.toggle("active",panel.dataset.tabPanel===active);
+  });
+  document.querySelectorAll(".section-tab").forEach(button=>{
+    const selected=button.dataset.tab===active;
+    button.classList.toggle("active",selected);
+    button.setAttribute("aria-selected",selected?"true":"false");
+  });
+  document.querySelectorAll(".sidebar .nav-link").forEach(link=>{
+    const selected=link.getAttribute("href")==="#"+active || (active==="overview"&&link.getAttribute("href")==="#overview");
+    link.classList.toggle("active",selected);
+  });
+  history.replaceState(null,"","#"+(active==="overview"?"overview":active));
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+document.addEventListener("click",event=>{
+  const tab=event.target.closest("[data-tab]");
+  if(tab){event.preventDefault();setActiveTab(tab.dataset.tab);return;}
+  const link=event.target.closest(".sidebar .nav-link");
+  if(link){event.preventDefault();const target=link.getAttribute("href").slice(1);setActiveTab(target==="overview"?"overview":target);}
+});
 function nvdText(cve, langCode) {
   const descriptions=cve.descriptions||[];
   return descriptions.find(x=>x.lang===langCode)?.value || descriptions.find(x=>x.lang==="en")?.value || t("noDescription");

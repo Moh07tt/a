@@ -125,8 +125,12 @@ function renderTable(){
 function setActiveTab(name){
   const allowed=["overview","vulnerabilities","alerts","global-threats","cve-intelligence","ioc-lab","sources","iraq-watch","methodology"];
   const active=allowed.includes(name)?name:"overview";
-  document.querySelectorAll("[data-tab-panel]").forEach(panel=>{
-    panel.classList.toggle("active",panel.dataset.tabPanel===active);
+  document.querySelectorAll(".tab-panel[data-tab-panel]").forEach(panel=>{
+    const selected=panel.dataset.tabPanel===active;
+    panel.hidden=!selected;
+    panel.classList.toggle("active",selected);
+    panel.setAttribute("aria-hidden",selected?"false":"true");
+    panel.style.display=selected?"block":"none";
   });
   document.querySelectorAll(".section-tab").forEach(button=>{
     const selected=button.dataset.tab===active;
@@ -134,10 +138,10 @@ function setActiveTab(name){
     button.setAttribute("aria-selected",selected?"true":"false");
   });
   document.querySelectorAll(".sidebar .nav-link").forEach(link=>{
-    const selected=link.getAttribute("href")==="#"+active || (active==="overview"&&link.getAttribute("href")==="#overview");
+    const selected=link.getAttribute("href")==="#"+active;
     link.classList.toggle("active",selected);
   });
-  history.replaceState(null,"","#"+(active==="overview"?"overview":active));
+  history.replaceState(null,"","#"+active);
   window.scrollTo({top:0,behavior:"smooth"});
 }
 document.addEventListener("click",event=>{

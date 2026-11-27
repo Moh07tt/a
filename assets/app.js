@@ -450,7 +450,7 @@ function renderThreatList(){
 async function loadGlobalThreats(checkNew=false){
  const list=$("globalThreatList"),state=$("threatFeedState"),updated=$("threatFeedUpdated");if(!list)return;
  try{
-  const res=await fetch("./data/global-threats.json?ts="+Date.now(),{cache:"no-store"});if(!res.ok)throw new Error("HTTP "+res.status);
+  const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),15000);const res=await fetch("./data/global-threats.json?ts="+Date.now(),{cache:"no-store",signal:controller.signal});clearTimeout(timeout);if(!res.ok)throw new Error("HTTP "+res.status);
   const payload=await res.json();if(!Array.isArray(payload.items)||!payload.items.length)throw new Error("Empty advisory snapshot");
   globalAdvisoryItems=payload.items.slice(0,30);localStorage.setItem("msa-feed-global-updated",payload.generatedAt||new Date().toISOString());localStorage.setItem("msa-feed-global-status","ok");renderAnalystWorkspace();renderThreatStats(globalAdvisoryItems);renderThreatList();renderOverviewIntel();initSourceCoverageMap();
   state.textContent=lang==="ar"?"متصل":"Connected";updated.textContent=payload.generatedAt?new Date(payload.generatedAt).toLocaleString(lang==="ar"?"ar-IQ":"en-US"):"";
@@ -537,7 +537,7 @@ function renderIraqAdvisories(){
 async function loadIraqAdvisories(){
  const state=$("iraqAdvisoryState"),updated=$("iraqAdvisoryUpdated"),list=$("iraqAdvisoryList");if(!list)return;
  try{
-  const response=await fetch("./data/iraq-watch.json?ts="+Date.now(),{cache:"no-store"});
+  const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),15000);const response=await fetch("./data/iraq-watch.json?ts="+Date.now(),{cache:"no-store",signal:controller.signal});clearTimeout(timeout);
   if(!response.ok)throw new Error("HTTP "+response.status);
   const payload=await response.json();
   iraqAdvisoryItems=Array.isArray(payload.items)?payload.items:[];localStorage.setItem("msa-feed-iraq-updated",payload.generatedAt||new Date().toISOString());localStorage.setItem("msa-feed-iraq-status","ok");renderAnalystWorkspace();
@@ -601,6 +601,8 @@ bindSavedIntel();
 document.addEventListener("click",event=>{if(event.target.closest("#analystRefreshBtn")){loadKev();loadGlobalThreats();loadIraqAdvisories();}});
 
 applyLanguage();
+// Render the overview immediately so no card can remain stuck on its initial loading placeholder.
+renderOverviewIntel();
 loadGlobalThreats();
 loadIraqAdvisories();
 const initialTab=location.hash.slice(1);

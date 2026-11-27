@@ -261,7 +261,7 @@ async function loadGlobalThreats(){
    const d=item.published?new Date(item.published):null;
    const date=d&&!isNaN(d)?d.toLocaleString(lang==="ar"?"ar-IQ":"en-US",{dateStyle:"medium"}):"";
    const url=/^https:\/\//.test(item.url||"")?item.url:"#";
-   const summary=new DOMParser().parseFromString(String(item.summary||""),"text/html").body.textContent.replace(/\\s+/g," ").trim().slice(0,260);
+   const summary=new DOMParser().parseFromString(String(item.summary||""),"text/html").body.textContent.replace(/\s+/g," ").trim().slice(0,260);
    return '<article class="intel-feed-item"><div class="intel-feed-meta"><span class="intel-source-label">'+esc(item.source||"CISA")+'</span><time>'+esc(date)+'</time></div><b>'+esc(item.title||"Untitled advisory")+'</b><p>'+esc(summary||"Open the publisher advisory for details.")+'</p><a href="'+esc(url)+'" target="_blank" rel="noopener noreferrer">'+(lang==="ar"?"قراءة التحذير الأصلي ↗":"Read original advisory ↗")+'</a></article>';
   }).join("");
   state.textContent=lang==="ar"?"متصل":"Connected";

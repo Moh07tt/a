@@ -17,15 +17,15 @@ Repository: https://github.com/Moh07tt/a
 ## Current capabilities | الميزات الحالية
 
 - Responsive dashboard with Arabic/English language switching.
-- CISA Known Exploited Vulnerabilities (KEV) catalog ingestion.
+- CISA Known Exploited Vulnerabilities (KEV) catalog ingestion.\n- Priority scoring is a transparent heuristic based on KEV matches, CVSS text when present, infrastructure wording, ransomware signals, and recency; it is not a probability of compromise.
 - Search, vendor filtering, ransomware-use indicator filtering, and CVE detail panel.
 - NVD CVE detail lookup when the public NVD service is available.
-- Global Threat Intelligence: scheduled CISA cybersecurity-advisory snapshots with publisher links and publication dates.\n- CVE Intelligence: CISA KEV catalog search plus NVD technical details and CVSS enrichment on demand.\n- Iraq Cyber Watch: curated official Iraqi public-safety and cybersecurity resources, clearly separated from unverified incident claims.\n- Public source directory and methodology/scope notes.
+- Global Threat Intelligence: scheduled CISA cybersecurity-advisory snapshots with publisher links and publication dates.\n- CVE Intelligence: CISA KEV catalog search plus NVD technical details and CVSS enrichment on demand.\n- Iraq Cyber Watch: curated official Iraqi public-safety and cybersecurity resources, clearly separated from unverified incident claims.\n- Public source directory and methodology/scope notes.\n- Threat Priority Engine: transparent heuristic scoring, reason labels, and priority sorting.\n- Advanced advisory search and filters for infrastructure, KEV matches, ransomware signals, and critical priority.\n- Country-level source coverage map (not incident or victim locations).\n- Browser notifications for new high-priority advisories while the site remains open and permission is enabled.\n- Printable bilingual intelligence reports that can be saved as PDF from the browser print dialog.\n- Iraq Cyber Watch curated official resources; Iraqi feeds are linked, not automatically ingested in this version.
 - GitHub Pages deployment from the `main` branch root.
 
 ## Automated public data mirror | تحديث البيانات تلقائياً
 
-GitHub Actions refreshes `data/kev.json` from the public CISA KEV feed and `data/global-threats.json` from the CISA Cybersecurity Advisories RSS feed every six hours. The dashboard reads same-origin snapshots from GitHub Pages. The global feed displays original publisher links and does not infer local compromise from a general advisory.
+GitHub Actions refreshes `data/kev.json` from the public CISA KEV feed and `data/global-threats.json` from the CISA Cybersecurity Advisories RSS feed every six hours. The dashboard reads same-origin snapshots from GitHub Pages. Browser alerts poll the published advisory snapshot while the page remains open; they are not background push notifications. The map shows country-level source coverage only, not attack origins or victims. The global feed displays original publisher links and does not infer local compromise from a general advisory.
 
 The workflow uses only GitHub-hosted workflow execution and public data. GitHub Actions usage is subject to the account's current plan limits and GitHub policies.
 

@@ -98,7 +98,7 @@ function closeCveModal() {
   document.body.classList.remove("modal-open");
 }
 async function showCveDetails(id) {
-  if(!/^CVE-\\d{4}-\\d{4,}$/i.test(id)) return;
+  if(!/^CVE-\d{4}-\d{4,}$/i.test(id)) return;
   openCveModal();
   $("cveModalTitle").textContent=id;
   $("cveDetailBody").innerHTML=`<div class="loading-cell"><span class="spinner"></span>${t("cveLoading")}</div>`;
@@ -113,7 +113,7 @@ async function showCveDetails(id) {
     const severity=metric?.cvssData?.baseSeverity || metric?.baseSeverity || t("notScored");
     const score=cvss?.baseScore ?? "—";
     const weaknesses=(cve.weaknesses||[]).flatMap(w=>w.description||[]).map(w=>w.value).filter(Boolean);
-    const refs=(cve.references||[]).filter(r=>/^https?:\\/\\//i.test(r.url||"")).slice(0,8);
+    const refs=(cve.references||[]).filter(r=>typeof r.url==="string"&&(r.url.startsWith("https://")||r.url.startsWith("http://"))).slice(0,8);
     const cpeItems=[];
     const collectCpes=node=>{if(!node||typeof node!=="object")return;if(Array.isArray(node))return node.forEach(collectCpes);if(Array.isArray(node.cpeMatch))node.cpeMatch.forEach(m=>{if(m.vulnerable&&m.criteria)cpeItems.push(m.criteria);});Object.values(node).forEach(value=>{if(value&&typeof value==="object")collectCpes(value);});};
     collectCpes(cve.configurations);

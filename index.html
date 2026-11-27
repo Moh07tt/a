@@ -119,8 +119,15 @@
       </section>
     </main>
   </div>
+  <section id="cveModal" class="cve-modal" role="dialog" aria-modal="true" aria-labelledby="cveModalTitle" aria-hidden="true">
+    <div class="cve-modal-backdrop" data-close-cve></div>
+    <div class="cve-detail-panel">
+      <div class="cve-detail-head"><div><span class="eyebrow" data-i18n="cveDetailEyebrow">VULNERABILITY INTELLIGENCE</span><h2 id="cveModalTitle">CVE details</h2></div><button id="closeCveModal" class="cve-close" type="button" aria-label="Close">×</button></div>
+      <div id="cveDetailBody" class="cve-detail-body"><div class="loading-cell"><span class="spinner"></span>Loading…</div></div>
+    </div>
+  </section>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
-  <script src="assets/app.js?v=5"></script>
+  <script src="assets/app.js?v=6"></script>
   <script data-goatcounter="https://mohammedalsafi.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
   <script>
     (function () {

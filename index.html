@@ -97,6 +97,7 @@
             <div class="source-note" data-i18n="sourceNote">NVD and MITRE are linked as public references. Automated AlienVault OTX ingestion requires a server-side API key; no secret is stored in this public website.</div>
           </section>
         </div>
+        <div class="panel visitor-panel"><div><span class="eyebrow" data-i18n="siteVisitors">SITE VISITORS</span><p data-i18n="visitorCounterDescription">Total visits to this platform</p></div><div id="visitor-count" aria-live="polite"><span data-i18n="loadingCount">Loading count…</span></div></div>
         <footer><span>© 2026 Mohammed Al-Safi · Cyber Intelligence</span><span data-i18n="footerDisclaimer">Independent project · Data belongs to its respective publishers.</span></footer>
       </section>
     </main>
@@ -104,5 +105,19 @@
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
   <script src="assets/app.js?v=4"></script>
   <script data-goatcounter="https://mohammedalsafi.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+  <script>
+    (function () {
+      var timer = setInterval(function () {
+        if (window.goatcounter && window.goatcounter.visit_count) {
+          clearInterval(timer);
+          window.goatcounter.visit_count({
+            append: '#visitor-count',
+            path: 'TOTAL',
+            style: 'div { background: transparent; border: 0; color: #e8f0ff; font: 700 24px Inter, sans-serif; padding: 0; width: auto; height: auto; } #gcvc-for { color: #9aacc5; font-size: 11px; } #gcvc-by { color: #7f91aa; font-size: 10px; }'
+          });
+        }
+      }, 100);
+    })();
+  </script>
 </body>
 </html>

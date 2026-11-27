@@ -194,3 +194,13 @@ html[dir="rtl"] .cve-reference-list{padding-left:0;padding-right:18px}
 }
 
 .iraq-advisory-head h3 span,.ioc-form-title span{display:block}
+
+/* Final mobile cache-safe layout corrections */
+@media(max-width:720px){
+ .section-tabs{position:relative!important;top:auto!important;z-index:2!important;backdrop-filter:none}
+ .ioc-form{display:flex;flex-direction:column;gap:10px}
+ .ioc-form .search-box{display:flex!important;align-items:center;width:100%;max-width:none;height:50px;min-height:50px;padding:0 12px;box-sizing:border-box;overflow:hidden}
+ .ioc-form .search-box input{display:block!important;flex:1 1 auto;width:1%;height:100%;min-width:0;max-width:100%;margin:0;padding:0 4px!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;outline:0!important}
+ .ioc-form .search-box:focus-within{border-color:#4778a8}
+ .ioc-form .outline-button{width:100%}
+}

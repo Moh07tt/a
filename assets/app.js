@@ -383,7 +383,7 @@ async function loadGlobalThreats(checkNew=false){
    globalAdvisoryItems.filter(x=>!previous.includes(x.url||x.title)).map(item=>({item,intel:classifyAdvisory(item)})).filter(x=>["critical","high"].includes(x.intel.priorityLevel)).slice(0,3).forEach(({item,intel})=>new Notification(lang==="ar"?"تنبيه تهديد سيبراني جديد":"New cyber threat alert",{body:item.title+" · "+intel.priority+"/100",icon:"./favicon.svg"}));
   }
   localStorage.setItem("msa-known-advisories",JSON.stringify(ids));
- }catch(err){console.warn("CISA advisory snapshot unavailable",err);list.innerHTML='<div class="notice"><b>'+esc(lang==="ar"?"الموجز غير متاح حالياً":"Feed temporarily unavailable")+'</b><span>'+esc(lang==="ar"?"راجع التحذيرات مباشرة من موقع CISA الرسمي.":"Review advisories directly on the official CISA website.")+'</span><a href="https://www.cisa.gov/news-events/cybersecurity-advisories" target="_blank" rel="noopener noreferrer">CISA Cybersecurity Advisories ↗</a></div>';state.textContent=lang==="ar"?"غير متاح":"Unavailable";}
+ }catch(err){console.warn("CISA advisory snapshot unavailable",err);list.innerHTML='<div class="notice"><b>'+esc(lang==="ar"?"الموجز غير متاح حالياً":"Feed temporarily unavailable")+'</b><span>'+esc(lang==="ar"?"راجع التحذيرات مباشرة من موقع CISA الرسمي.":"Review advisories directly on the official CISA website.")+'</span><a href="https://www.cisa.gov/news-events/cybersecurity-advisories" target="_blank" rel="noopener noreferrer">CISA Cybersecurity Advisories ↗</a></div>';state.textContent=lang==="ar"?"غير متاح":"Unavailable";renderOverviewIntel();}
 }
 function initSourceCoverageMap(){
  const node=$("sourceCoverageMap");if(!node||node.dataset.ready==="1")return;
@@ -472,6 +472,7 @@ async function loadIraqAdvisories(){
   console.warn("Iraq advisories unavailable",error);
   if(state)state.textContent="غير متاح / Unavailable";
   list.innerHTML='<div class="notice">تعذر تحميل الموجز العراقي حالياً. <a href="https://ncc.gov.iq/advisories.html" target="_blank" rel="noopener noreferrer">افتح المصدر الرسمي ↗</a></div>';
+  renderOverviewIntel();
  }
 }
 $("iraqAdvisorySearch")?.addEventListener("input",renderIraqAdvisories);

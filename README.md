@@ -81,3 +81,8 @@ The IOC Lab validates common public IPv4 addresses, domains and HTTP(S) URLs loc
 ## Overview live intelligence | موجز الصفحة الرئيسية
 
 The overview includes three compact panels: the five highest-scored CISA advisories using the dashboard's heuristic triage score; five recent entries from CISA's Known Exploited Vulnerabilities catalog (prioritizing records marked as associated with ransomware); and five most recent entries from the Iraqi NCC public-advisory snapshot. The KEV list is described as exploited vulnerabilities, not necessarily CVSS-critical. Each panel links to the full relevant section or original public source. The panels update when their corresponding feeds load.
+
+
+## Threat analysis, remediation and saved intelligence | تحليل التهديدات والحفظ
+
+CVE detail views include general remediation guidance derived from NVD severity, description and weakness terms. Guidance directs operators to vendor advisories for exact affected/fixed versions and does not invent patch versions. Visitors can save CISA advisories and CVE identifiers to a browser-local watchlist (up to 100 entries), remove saved items, and view the list on the overview page. Saved items are per browser/device and are not synced to an account.

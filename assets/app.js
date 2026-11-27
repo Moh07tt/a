@@ -284,4 +284,3 @@ loadGlobalThreats();
 const initialTab=location.hash.slice(1);
 setActiveTab(["overview","vulnerabilities","alerts","global-threats","cve-intelligence","sources","iraq-watch","methodology"].includes(initialTab)?initialTab:"overview");
 loadKev();
-loadGlobalThreats();

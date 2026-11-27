@@ -229,4 +229,6 @@ $("closeCveModal").addEventListener("click",closeCveModal);
 $("cveModal").addEventListener("click",e=>{if(e.target.hasAttribute("data-close-cve"))closeCveModal();});
 document.addEventListener("keydown",e=>{if(e.key==="Escape")closeCveModal();});
 applyLanguage();
+const initialTab=location.hash.slice(1);
+setActiveTab(["overview","vulnerabilities","alerts","sources","iraq-watch","methodology"].includes(initialTab)?initialTab:"overview");
 loadKev();

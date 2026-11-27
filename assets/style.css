@@ -192,3 +192,5 @@ html[dir="rtl"] .cve-reference-list{padding-left:0;padding-right:18px}
  .iraq-advisory-head h3{font-size:14px}
  .iraq-advisory-meta{flex-wrap:wrap}
 }
+
+.iraq-advisory-head h3 span,.ioc-form-title span{display:block}

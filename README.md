@@ -20,12 +20,12 @@ Repository: https://github.com/Moh07tt/a
 - CISA Known Exploited Vulnerabilities (KEV) catalog ingestion.
 - Search, vendor filtering, ransomware-use indicator filtering, and CVE detail panel.
 - NVD CVE detail lookup when the public NVD service is available.
-- Public source directory, Iraq Cyber Watch links, and methodology/scope notes.
+- Global Threat Intelligence: scheduled CISA cybersecurity-advisory snapshots with publisher links and publication dates.\n- CVE Intelligence: CISA KEV catalog search plus NVD technical details and CVSS enrichment on demand.\n- Iraq Cyber Watch: curated official Iraqi public-safety and cybersecurity resources, clearly separated from unverified incident claims.\n- Public source directory and methodology/scope notes.
 - GitHub Pages deployment from the `main` branch root.
 
 ## Automated public data mirror | تحديث البيانات تلقائياً
 
-A GitHub Actions workflow updates `data/kev.json` from the public CISA KEV feed every six hours and can also be run manually from the Actions tab. The browser prefers this same-origin local snapshot and falls back to public upstream feeds if the snapshot is not available.
+GitHub Actions refreshes `data/kev.json` from the public CISA KEV feed and `data/global-threats.json` from the CISA Cybersecurity Advisories RSS feed every six hours. The dashboard reads same-origin snapshots from GitHub Pages. The global feed displays original publisher links and does not infer local compromise from a general advisory.
 
 The workflow uses only GitHub-hosted workflow execution and public data. GitHub Actions usage is subject to the account's current plan limits and GitHub policies.
 

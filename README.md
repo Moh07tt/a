@@ -1,44 +1,67 @@
-# Mohammed Al-Safi Cyber Intelligence — Public Launch Package v0.2
+# Mohammed Al-Safi Cyber Intelligence
 
-A bilingual (Arabic/English), public-facing cyber threat intelligence dashboard by Mohammed Al-Safi.
+**A free, public, open-source cyber threat intelligence dashboard.**  
+**منصة استخبارات سيبرانية مجانية ومفتوحة المصدر ومتاحة للجميع.**
 
-## Included in this first release
-- Responsive dark dashboard UI.
-- Arabic/English language switch.
-- Live ingestion of the CISA Known Exploited Vulnerabilities (KEV) public JSON feed.
-- Search and vendor filtering.
-- Links to authoritative CISA and NVD sources.
-- Clear scope notice: this is an intelligence dashboard, not an intrusion-detection sensor.
+Live site: https://moh07tt.github.io/a/  
+Repository: https://github.com/Moh07tt/a
 
-## Run locally
-This is a static site. From this folder, run:
+## Project goals | أهداف المشروع
+
+- Publish accessible public cyber threat intelligence for visitors worldwide.
+- Provide an Arabic and English interface.
+- Surface authoritative vulnerability and security-advisory information with clear source attribution.
+- Highlight Iraqi public cybersecurity resources without presenting unverified claims as confirmed incidents.
+- Keep the project static-hosting friendly and free to access.
+
+## Current capabilities | الميزات الحالية
+
+- Responsive dashboard with Arabic/English language switching.
+- CISA Known Exploited Vulnerabilities (KEV) catalog ingestion.
+- Search, vendor filtering, ransomware-use indicator filtering, and CVE detail panel.
+- NVD CVE detail lookup when the public NVD service is available.
+- Public source directory, Iraq Cyber Watch links, and methodology/scope notes.
+- GitHub Pages deployment from the `main` branch root.
+
+## Automated public data mirror | تحديث البيانات تلقائياً
+
+A GitHub Actions workflow updates `data/kev.json` from the public CISA KEV feed every six hours and can also be run manually from the Actions tab. The browser prefers this same-origin local snapshot and falls back to public upstream feeds if the snapshot is not available.
+
+The workflow uses only GitHub-hosted workflow execution and public data. GitHub Actions usage is subject to the account's current plan limits and GitHub policies.
+
+## Run locally | التشغيل المحلي
+
+This is a static website. From the repository directory:
 
 ```bash
 python3 -m http.server 8080
 ```
 
-Then open `http://localhost:8080`.
+Open http://localhost:8080.
 
-## Publish
-Upload the contents of this folder to a public GitHub repository. Keep `index.html` at the repository root, then enable GitHub Pages from **Settings → Pages → Deploy from a branch → main → /(root)**.
+## Deployment | النشر
 
-This is a static first release. It has no server, user accounts, database, email alerts, or AI agent execution.
+The public site is hosted with GitHub Pages from `main` and `/(root)`. Keep `index.html` at the repository root. Changes committed to the published branch are deployed by GitHub Pages.
 
-## Data source
-CISA KEV JSON feed:
-https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json
+## Data sources | مصادر البيانات
 
-CISA KEV catalog:
-https://www.cisa.gov/known-exploited-vulnerabilities-catalog
+- CISA Known Exploited Vulnerabilities: https://www.cisa.gov/known-exploited-vulnerabilities-catalog
+- NIST National Vulnerability Database: https://nvd.nist.gov/
+- MITRE ATT&CK: https://attack.mitre.org/
+- Iraqi National Cybersecurity Center: https://ncc.gov.iq/
 
-NIST National Vulnerability Database:
-https://nvd.nist.gov/
+Each source retains ownership of its own data and content. Review source-specific terms before reusing or redistributing upstream material.
 
-## Important limitations
-- The browser fetches the CISA public JSON feed directly. If the publisher changes CORS policy or feed URL, the table may not load.
-- Critical severity remains unavailable (`—`) until CVSS enrichment from NVD is implemented.
-- News, ransomware monitoring, threat maps, APT profiles, AI-agent tracking, and push alerts are planned, not yet connected.
-- Never put API keys or secrets in browser-delivered files.
+## Scope and responsible use | النطاق والاستخدام المسؤول
 
-## License
-Starter project for personal and educational use. Review each upstream source's terms before redistributing its data.
+This project presents public, defensive cyber intelligence. It is not an intrusion-detection system, does not confirm that a specific organization has been compromised, and does not scan or exploit third-party systems. A public advisory or threat indicator must not be treated as proof of a local incident without independent verification.
+
+Never place API keys, passwords, tokens, or other secrets in browser-delivered files or this public repository.
+
+## Contributing | المساهمة
+
+Issues, corrections, documentation improvements, and pull requests are welcome. Please include the original source and publication date when proposing intelligence content. See [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## License | الرخصة
+
+The original source code in this repository is released under the MIT License. See [LICENSE](LICENSE). Third-party data, trademarks, images, and other upstream materials remain subject to their respective owners' terms.

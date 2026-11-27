@@ -240,7 +240,7 @@ async function loadKev(){
     if(button){button.disabled=false;button.removeAttribute("aria-busy");}
   }
 }
-$("langToggle").addEventListener("click",()=>{lang=lang==="en"?"ar":"en";localStorage.setItem("kgt-lang",lang);applyLanguage();});
+$("langToggle").addEventListener("click",()=>{lang=lang==="en"?"ar":"en";localStorage.setItem("kgt-lang",lang);applyLanguage();loadGlobalThreats();});
 $("refreshBtn").addEventListener("click",loadKev);
 $("liveRefreshBtn").addEventListener("click",loadKev);
 $("searchInput").addEventListener("input",renderTable);
@@ -280,6 +280,7 @@ $("cveQuickSearch").addEventListener("keydown",e=>{if(e.key==="Enter")$("cveQuic
 $("openKevTab").addEventListener("click",()=>setActiveTab("vulnerabilities"));
 
 applyLanguage();
+loadGlobalThreats();
 const initialTab=location.hash.slice(1);
 setActiveTab(["overview","vulnerabilities","alerts","global-threats","cve-intelligence","sources","iraq-watch","methodology"].includes(initialTab)?initialTab:"overview");
 loadKev();

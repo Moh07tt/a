@@ -1,7 +1,99 @@
 {
   "source": "https://ncc.gov.iq/advisories.html",
   "sourceName": "National Cybersecurity Center of Iraq",
-  "generatedAt": "2026-11-27T08:44:28.948Z",
-  "items": [],
-  "note": "Initial snapshot. The scheduled workflow will populate it from the official NCC advisories page."
+  "generatedAt": "2026-11-27T08:44:59.920Z",
+  "items": [
+    {
+      "title": "تحديثات أمنية لمعالجة عشر ثغرات في Node.js، منها ثغرة قد تتيح تنفيذ تعليمات برمجية عن بُعد",
+      "date": "2026-10-22",
+      "url": "https://ncc.gov.iq/advisories.html",
+      "source": "المركز الوطني للأمن السيبراني العراقي"
+    },
+    {
+      "title": "ثغرتان حرجتان في محرك PHP تتيحان تنفيذ تعليمات برمجية عن بُعد دون مصادقة",
+      "date": "2026-10-22",
+      "url": "https://ncc.gov.iq/advisories.html",
+      "source": "المركز الوطني للأمن السيبراني العراقي"
+    },
+    {
+      "title": "استغلال نشط لثغرة حرجة تتيح رفع ملفات PHP وتنفيذها دون مصادقة في إضافة Bricksforge",
+      "date": "2026-10-12",
+      "url": "https://ncc.gov.iq/advisories.html",
+      "source": "المركز الوطني للأمن السيبراني العراقي"
+    },
+    {
+      "title": "ثغرة حرجة في F5 BIG-IP APM تتيح تنفيذ تعليمات برمجية عن بُعد دون مصادقة",
+      "date": "2026-09-24",
+      "url": "https://ncc.gov.iq/advisories.html",
+      "source": "المركز الوطني للأمن السيبراني العراقي"
+    },
+    {
+      "title": "ثغرة حرجة في WordPress Core تتيح تضمين ملفات PHP محلية وقد تؤدي إلى تنفيذ تعليمات برمجية عن بُعد",
+      "date": "2026-09-23",
+      "url": "https://ncc.gov.iq/advisories.html",
+      "source": "المركز الوطني للأمن السيبراني العراقي"
+    },
+    {
+      "title": "استغلال نشط لثغرات حرجة في سلسلة MikroTik RouterOS – MikroTrick",
+      "date": "2026-09-17",
+      "url": "https://ncc.gov.iq/advisories.html",
+      "source": "المركز الوطني للأمن السيبراني العراقي"
+    },
+    {
+      "title": "ثغرة حرجة في إضافة Forminator لمنصة WordPress تتيح رفع ملفات ضارة وتنفيذ تعليمات برمجية عن بُعد",
+      "date": "2026-08-18",
+      "url": "https://ncc.gov.iq/advisories.html",
+      "source": "المركز الوطني للأمن السيبراني العراقي"
+    },
+    {
+      "title": "ثغرة حرجة في إضافة Profile Builder لمنصة WordPress تتيح تجاوز المصادقة والاستيلاء على حساب مدير الموقع",
+      "date": "2026-08-17",
+      "url": "https://ncc.gov.iq/advisories.html",
+      "source": "المركز الوطني للأمن السيبراني العراقي"
+    },
+    {
+      "title": "ثغرة XSS في WordPress وPHP قد تؤدي إلى تنفيذ شيفرة قبل المصادقة",
+      "date": "2026-08-07",
+      "url": "https://ncc.gov.iq/advisories.html",
+      "source": "المركز الوطني للأمن السيبراني العراقي"
+    },
+    {
+      "title": "ثغرة حرجة في cPanel & WHM قد تسمح بتنفيذ أوامر قواعد بيانات بصلاحيات إدارية",
+      "date": "2026-08-05",
+      "url": "https://ncc.gov.iq/advisories.html",
+      "source": "المركز الوطني للأمن السيبراني العراقي"
+    },
+    {
+      "title": "استغلال فعلي لثغرة بيانات اعتماد ثابتة في Cisco Secure Firewall Management Center",
+      "date": "2026-07-30",
+      "url": "https://ncc.gov.iq/advisories.html",
+      "source": "المركز الوطني للأمن السيبراني العراقي"
+    },
+    {
+      "title": "استغلال فعلي لثغرة في Microsoft Exchange Outlook Web Access – CVE-2026-42897",
+      "date": "2026-07-30",
+      "url": "https://ncc.gov.iq/advisories.html",
+      "source": "المركز الوطني للأمن السيبراني العراقي"
+    },
+    {
+      "title": "ثغرة مستغلة فعلياً في Microsoft SharePoint Server قد تسمح بتنفيذ أوامر برمجية عن بُعد",
+      "date": "2026-07-23",
+      "url": "https://ncc.gov.iq/advisories.html",
+      "source": "المركز الوطني للأمن السيبراني العراقي"
+    },
+    {
+      "title": "ثغرة مستغلة فعلياً في Check Point SmartConsole قد تسمح بالوصول الإداري الكامل",
+      "date": "2026-07-23",
+      "url": "https://ncc.gov.iq/advisories.html",
+      "source": "المركز الوطني للأمن السيبراني العراقي"
+    },
+    {
+      "title": "ثغرة أمنية في NGINX قد تؤدي إلى تعطيل الخدمة أو تنفيذ أوامر برمجية",
+      "date": "2026-07-22",
+      "url": "https://ncc.gov.iq/advisories.html",
+      "source": "المركز الوطني للأمن السيبراني العراقي"
+    }
+  ],
+  "note": "Titles and publication dates surfaced on the official NCC Iraq advisories page. Links open the official advisories index; these are published advisories, not confirmed incidents in Iraq.",
+  "seededFromOfficialListing": true
 }

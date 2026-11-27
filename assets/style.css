@@ -204,3 +204,7 @@ html[dir="rtl"] .cve-reference-list{padding-left:0;padding-right:18px}
  .ioc-form .search-box:focus-within{border-color:#4778a8}
  .ioc-form .outline-button{width:100%}
 }
+
+/* Professional bilingual typography */
+body{font-family:Inter,"IBM Plex Sans Arabic",sans-serif;font-synthesis:none;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased}
+:lang(ar),[dir="rtl"]{font-family:"IBM Plex Sans Arabic",Inter,sans-serif}

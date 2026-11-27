@@ -176,3 +176,19 @@ html[dir="rtl"] .cve-reference-list{padding-left:0;padding-right:18px}
 /* Passive IOC lookup lab and private local watchlist */
 .ioc-form{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:9px;margin:16px 0}.ioc-form input{width:100%;min-width:0;background:#0a1523;border:1px solid #2a4059;border-radius:7px;padding:11px;color:#dce8f7;font:inherit;font-size:11px}.ioc-provider-links{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.ioc-provider-links a{display:inline-block;padding:7px 10px;border:1px solid #31506e;border-radius:6px;color:#8fc4ff;text-decoration:none;font-size:10px}.ioc-watch-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:20px 0 10px}.ioc-watch-head b,.ioc-watch-head small{display:block}.ioc-watch-head b{font-size:12px}.ioc-watch-head small{font-size:9px;color:#8ea2ba;margin-top:4px}.ioc-watchlist{display:grid;grid-template-columns:1fr 1fr;gap:8px}.ioc-watch-item{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 11px;border:1px solid #26394f;border-radius:7px;background:#0d1a29;min-width:0}.ioc-watch-item b,.ioc-watch-item small{display:block;overflow-wrap:anywhere}.ioc-watch-item b{font-size:10px}.ioc-watch-item small{font-size:8px;color:#8fa4bc;margin-top:3px}.ioc-watch-item button{border:1px solid #4b3942;background:#291d29;color:#ffb6c0;border-radius:6px;width:28px;height:28px;cursor:pointer;font-size:17px}.ioc-form .outline-button{white-space:nowrap}
 @media(max-width:720px){.ioc-form{grid-template-columns:1fr}.ioc-form .outline-button{width:100%}.ioc-watchlist{grid-template-columns:1fr}.ioc-watch-head{align-items:flex-start}}
+
+/* Mobile refinements for IOC Lab */
+.ioc-form .search-box{max-width:none;width:100%;height:48px;min-width:0;box-sizing:border-box}
+.ioc-form .search-box input{width:100%;min-width:0;background:transparent!important;border:0!important;outline:0;box-shadow:none;padding:0;color:#dce8f7}
+.ioc-form .search-box span{flex:0 0 auto}
+.ioc-watch-head>div{flex:1;min-width:0}
+.ioc-watch-head .outline-button{width:auto;max-width:125px;flex:0 0 auto;white-space:normal;font-size:10px;padding:9px 11px}
+.iraq-advisory-head h3{line-height:1.55}
+.iraq-advisory-head p{line-height:1.85}
+.iraq-advisory-card>b{line-height:1.85}
+@media(max-width:720px){
+ .ioc-watch-head{align-items:flex-start;gap:10px}
+ .ioc-watch-head .outline-button{width:auto;max-width:105px}
+ .iraq-advisory-head h3{font-size:14px}
+ .iraq-advisory-meta{flex-wrap:wrap}
+}

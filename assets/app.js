@@ -112,9 +112,9 @@ async function showCveDetails(id) {
     const severity=metric?.cvssData?.baseSeverity || metric?.baseSeverity || t("notScored");
     const score=cvss?.baseScore ?? "—";
     const weaknesses=(cve.weaknesses||[]).flatMap(w=>w.description||[]).map(w=>w.value).filter(Boolean);
-    const refs=(cve.references||[]).slice(0,8);
-    const configs=(cve.configurations||[]).slice(0,5);
-    const severityClass=String(severity).toLowerCase();
+    const refs=(cve.references||[]).filter(r=>/^https?:\\/\\//i.test(r.url||"")).slice(0,8);
+    const cpeItems=[];\n    const collectCpes=node=>{if(!node||typeof node!=="object")return;if(Array.isArray(node))return node.forEach(collectCpes);if(Array.isArray(node.cpeMatch))node.cpeMatch.forEach(m=>{if(m.vulnerable&&m.criteria)cpeItems.push(m.criteria);});Object.values(node).forEach(value=>{if(value&&typeof value==="object")collectCpes(value);});};\n    collectCpes(cve.configurations);\n    const affected=[...new Set(cpeItems)].slice(0,12);
+    const severityClass=["critical","high","medium","low"].includes(String(severity).toLowerCase())?String(severity).toLowerCase():"none";
     $("cveDetailBody").innerHTML=`
       <div class="cve-metrics">
         <div class="cve-metric"><small>${esc(t("severity"))}</small><b class="severity-pill severity-${esc(severityClass)}">${esc(severity)}</b></div>
@@ -124,7 +124,7 @@ async function showCveDetails(id) {
       </div>
       <section class="cve-detail-section"><h3>${esc(t("description"))}</h3><p>${esc(nvdText(cve,lang))}</p></section>
       <section class="cve-detail-section"><h3>${esc(t("weaknesses"))}</h3><p>${weaknesses.length?weaknesses.map(esc).join(" · "):"—"}</p></section>
-      <section class="cve-detail-section"><h3>${esc(t("affectedProducts"))}</h3><p>${configs.length?esc(configs.map((_,i)=>"Configuration "+(i+1)).join(" · ")):"See NVD record for affected configurations."}</p></section>
+      <section class="cve-detail-section"><h3>${esc(t("affectedProducts"))}</h3><p>${affected.length?affected.map(esc).join("<br>"):"See NVD record for affected configurations."}</p></section>
       <section class="cve-detail-section"><h3>${esc(t("references"))}</h3>${refs.length?'<ul class="cve-reference-list">'+refs.map(r=>'<li><a href="'+esc(r.url)+'" target="_blank" rel="noopener noreferrer">'+esc(r.url)+'</a></li>').join("")+'</ul>':'<p>'+esc(t("noReferences"))+'</p>'}</section>
       <div class="cve-detail-actions"><a class="outline-button" href="https://nvd.nist.gov/vuln/detail/${encodeURIComponent(id)}" target="_blank" rel="noopener noreferrer">${esc(t("openNvd"))}</a><a class="outline-button" href="https://www.cve.org/CVERecord?id=${encodeURIComponent(id)}" target="_blank" rel="noopener noreferrer">${esc(t("openCve"))}</a></div>
       <p class="cve-attribution">Source: NIST National Vulnerability Database. Data may be incomplete or updated by the publisher.</p>`;

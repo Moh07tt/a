@@ -276,8 +276,7 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape")closeCveModal();});
 
 function classifyAdvisory(item){
  const raw=(String(item.title||"")+" "+String(item.summary||"")).replace(/<[^>]*>/g," ");
- const text=raw.toLowerCase();
- const cves=[...new Set(raw.match(/CVE-\d{4}-\d{4,}/gi)||[])].slice(0,8);
+ const cves=[...new Set(raw.match(/CVE-\d{4}-\d{4,}/gi)||[])].slice(0,12);
  const matches=kevItems.filter(v=>cves.includes(String(v.cveID||"").toUpperCase()));
  const infrastructure=/critical infrastructure|critical manufacturing|energy sector|water and wastewater|transportation systems|industrial control|\bics\b|\bscada\b|\bplc\b|\bot\b|power grid|electric utility|oil and gas/i.test(raw);
  let category="catGeneral";
@@ -294,55 +293,96 @@ function classifyAdvisory(item){
  const severity=score===null?null:score>=9?"sevCritical":score>=7?"sevHigh":score>=4?"sevMedium":"sevLow";
  const ransomware=matches.some(v=>v.knownRansomwareCampaignUse==="Known")||/ransomware|برمجيات الفدية/i.test(raw);
  const products=[...new Set(matches.map(v=>[v.vendorProject,v.product].filter(Boolean).join(" · ")))].slice(0,4);
- return {category,score,severity,infrastructure,cves,matches,ransomware,products};
+ const published=item.published?new Date(item.published):null,ageDays=published&&!isNaN(published)?Math.max(0,(Date.now()-published.getTime())/86400000):null;
+ const reasons=[];let priority=20;
+ if(matches.length){priority+=25;reasons.push(lang==="ar"?"مطابقة مع CISA KEV":"CISA KEV match");}
+ if(ransomware){priority+=20;reasons.push(lang==="ar"?"مؤشر برمجيات فدية":"Ransomware signal");}
+ if(infrastructure){priority+=15;reasons.push(lang==="ar"?"ارتباط محتمل ببنية حيوية":"Critical infrastructure wording");}
+ if(score!==null){priority+=score>=9?20:score>=7?14:score>=4?7:2;reasons.push("CVSS "+score.toFixed(1));}
+ if(ageDays!==null&&ageDays<=7){priority+=10;reasons.push(lang==="ar"?"تحذير حديث":"Recent advisory");}
+ priority=Math.min(100,priority);
+ const priorityLevel=priority>=75?"critical":priority>=55?"high":priority>=35?"medium":"low";
+ return {category,score,severity,infrastructure,cves,matches,ransomware,products,priority,priorityLevel,reasons,ageDays};
 }
 function renderThreatStats(items){
  const node=$("globalThreatStats");if(!node)return;
- const classified=items.map(classifyAdvisory);
- const infra=classified.filter(x=>x.infrastructure).length;
- const known=classified.filter(x=>x.matches.length).length;
- const critical=classified.filter(x=>x.severity==="sevCritical").length;
- node.innerHTML=[
-  [items.length,lang==="ar"?"تحذيرات معروضة":"Advisories shown"],
-  [infra,lang==="ar"?"مؤشرات بنية تحتية":"Infrastructure signals"],
-  [known,lang==="ar"?"تحذيرات مرتبطة بـ KEV":"KEV-linked advisories"],
-  [critical,lang==="ar"?"مؤشرات CVSS حرجة":"Critical CVSS signals"]
- ].map(([n,label])=>'<div class="intel-stat"><b>'+n+'</b><span>'+esc(label)+'</span></div>').join("");
+ const data=items.map(classifyAdvisory);
+ const stats=[[items.length,lang==="ar"?"تحذيرات معروضة":"Advisories shown"],[data.filter(x=>x.infrastructure).length,lang==="ar"?"مؤشرات بنية تحتية":"Infrastructure signals"],[data.filter(x=>x.matches.length).length,lang==="ar"?"مطابقة KEV":"KEV matches"],[data.filter(x=>x.priorityLevel==="critical").length,lang==="ar"?"أولوية حرجة":"Critical priority"]];
+ node.innerHTML=stats.map(([n,label])=>'<div class="intel-stat"><b>'+n+'</b><span>'+esc(label)+'</span></div>').join("");
 }
-async function loadGlobalThreats(){
- const list=$("globalThreatList"),state=$("threatFeedState"),updated=$("threatFeedUpdated"); if(!list)return;
+let globalAdvisoryItems=[],threatSortHigh=true;
+function renderThreatList(){
+ const list=$("globalThreatList");if(!list)return;
+ const q=($("threatSearch")?.value||"").trim().toLowerCase(),type=$("threatTypeFilter")?.value||"all";
+ let rows=globalAdvisoryItems.map(item=>({item,intel:classifyAdvisory(item)})).filter(({item,intel})=>{
+  const hay=[item.title,item.summary,...intel.cves,...intel.products].join(" ").toLowerCase();
+  if(q&&!hay.includes(q))return false;
+  if(type==="infra"&&!intel.infrastructure)return false;
+  if(type==="kev"&&!intel.matches.length)return false;
+  if(type==="ransomware"&&!intel.ransomware)return false;
+  if(type==="critical"&&intel.priorityLevel!=="critical")return false;
+  return true;
+ });
+ rows.sort((a,b)=>threatSortHigh?b.intel.priority-a.intel.priority:a.intel.priority-b.intel.priority);
+ if(!rows.length){list.innerHTML='<div class="notice">'+esc(lang==="ar"?"لا توجد تحذيرات تطابق عوامل التصفية.":"No advisories match these filters.")+'</div>';return;}
+ list.innerHTML=rows.map(({item,intel})=>{
+  const d=item.published?new Date(item.published):null,date=d&&!isNaN(d)?d.toLocaleString(lang==="ar"?"ar-IQ":"en-US",{dateStyle:"medium"}):"";
+  const url=/^https:\/\//.test(item.url||"")?item.url:"#";
+  const summary=new DOMParser().parseFromString(String(item.summary||""),"text/html").body.textContent.replace(/\s+/g," ").trim().slice(0,320);
+  const category=translations[lang][intel.category]||translations[lang].catGeneral;
+  const severity=intel.severity?translations[lang][intel.severity]:translations[lang].noScore;
+  const level=lang==="ar"?({critical:"حرج",high:"عالٍ",medium:"متوسط",low:"منخفض"}[intel.priorityLevel]):intel.priorityLevel.toUpperCase();
+  const tags=['<span class="intel-tag tag-category">'+esc(category)+'</span>','<span class="intel-tag priority-'+intel.priorityLevel+'">'+esc(lang==="ar"?"أولوية "+level:"Priority "+level)+' · '+intel.priority+'/100</span>'];
+  if(intel.severity)tags.push('<span class="intel-tag severity-'+intel.severity.replace("sev","").toLowerCase()+'">'+esc(severity)+' · CVSS '+intel.score.toFixed(1)+'</span>');
+  if(intel.infrastructure)tags.push('<span class="intel-tag tag-infra">'+esc(translations[lang].infrastructureFlag)+'</span>');
+  if(intel.matches.length)tags.push('<span class="intel-tag tag-kev">'+esc(translations[lang].knownExploited)+'</span>');
+  if(intel.ransomware)tags.push('<span class="intel-tag tag-warning">'+esc(translations[lang].ransomwareSignal)+'</span>');
+  const why='<div class="intel-why"><small>'+esc(lang==="ar"?"لماذا هذه الأولوية؟":"Why this priority?")+'</small><span>'+esc(intel.reasons.join(" · ")||(lang==="ar"?"لا توجد مؤشرات إضافية":"No additional signals"))+'</span></div>';
+  const cves=intel.cves.length?'<div class="intel-enrichment"><small>'+esc(translations[lang].relatedCves)+'</small><div>'+intel.cves.map(id=>'<a href="https://nvd.nist.gov/vuln/detail/'+encodeURIComponent(id)+'" target="_blank" rel="noopener noreferrer">'+esc(id)+'</a>').join("")+'</div></div>':"";
+  const products=intel.products.length?'<div class="intel-products"><small>'+esc(lang==="ar"?"المنتجات المرتبطة وفق KEV":"Products matched in KEV")+'</small><span>'+esc(intel.products.join("، "))+'</span></div>':"";
+  return '<article class="intel-feed-item"><div class="intel-feed-meta"><span class="intel-source-label">'+esc(item.source||"CISA")+'</span><time>'+esc(date)+'</time></div><b>'+esc(item.title||"Untitled advisory")+'</b><div class="intel-tags">'+tags.join("")+'</div>'+why+'<p>'+esc(summary||"Open the publisher advisory for details.")+'</p>'+cves+products+'<a href="'+esc(url)+'" target="_blank" rel="noopener noreferrer">'+(lang==="ar"?"قراءة التحذير الأصلي ↗":"Read original advisory ↗")+'</a></article>';
+ }).join("");
+}
+async function loadGlobalThreats(checkNew=false){
+ const list=$("globalThreatList"),state=$("threatFeedState"),updated=$("threatFeedUpdated");if(!list)return;
  try{
-  const res=await fetch("./data/global-threats.json?ts="+Date.now(),{cache:"no-store"});
-  if(!res.ok)throw new Error("HTTP "+res.status);
-  const payload=await res.json(); if(!Array.isArray(payload.items)||!payload.items.length)throw new Error("Empty advisory snapshot");
-  const items=payload.items.slice(0,20);
-  renderThreatStats(items);
-  list.innerHTML=items.map(item=>{
-   const d=item.published?new Date(item.published):null;
-   const date=d&&!isNaN(d)?d.toLocaleString(lang==="ar"?"ar-IQ":"en-US",{dateStyle:"medium"}):"";
-   const url=/^https:\/\//.test(item.url||"")?item.url:"#";
-   const summary=new DOMParser().parseFromString(String(item.summary||""),"text/html").body.textContent.replace(/\s+/g," ").trim().slice(0,320);
-   const intel=classifyAdvisory(item);
-   const category=translations[lang][intel.category]||translations[lang].catGeneral;
-   const severity=intel.severity?translations[lang][intel.severity]:translations[lang].noScore;
-   const tags=[];
-   tags.push('<span class="intel-tag tag-category">'+esc(category)+'</span>');
-   if(intel.severity)tags.push('<span class="intel-tag severity-'+intel.severity.replace("sev","").toLowerCase()+'">'+esc(severity)+' · CVSS '+intel.score.toFixed(1)+'</span>');
-   if(intel.infrastructure)tags.push('<span class="intel-tag tag-infra">'+esc(translations[lang].infrastructureFlag)+'</span>');
-   if(intel.matches.length)tags.push('<span class="intel-tag tag-kev">'+esc(translations[lang].knownExploited)+'</span>');
-   if(intel.ransomware)tags.push('<span class="intel-tag tag-warning">'+esc(translations[lang].ransomwareSignal)+'</span>');
-   const cveHtml=intel.cves.length?'<div class="intel-enrichment"><small>'+esc(translations[lang].relatedCves)+'</small><div>'+intel.cves.map(id=>'<a href="https://nvd.nist.gov/vuln/detail/'+encodeURIComponent(id)+'" target="_blank" rel="noopener noreferrer">'+esc(id)+'</a>').join("")+'</div></div>':"";
-   const productsHtml=intel.products.length?'<div class="intel-products"><small>'+esc(lang==="ar"?"المنتجات المرتبطة وفق KEV":"Products matched in KEV")+'</small><span>'+esc(intel.products.join("، "))+'</span></div>':"";
-   return '<article class="intel-feed-item"><div class="intel-feed-meta"><span class="intel-source-label">'+esc(item.source||"CISA")+'</span><time>'+esc(date)+'</time></div><b>'+esc(item.title||"Untitled advisory")+'</b><div class="intel-tags">'+tags.join("")+'</div><p>'+esc(summary||"Open the publisher advisory for details.")+'</p>'+cveHtml+productsHtml+'<a href="'+esc(url)+'" target="_blank" rel="noopener noreferrer">'+(lang==="ar"?"قراءة التحذير الأصلي ↗":"Read original advisory ↗")+'</a></article>';
-  }).join("");
-  state.textContent=lang==="ar"?"متصل":"Connected";
-  updated.textContent=payload.generatedAt?new Date(payload.generatedAt).toLocaleString(lang==="ar"?"ar-IQ":"en-US"):"";
- }catch(err){
-  console.warn("CISA advisory snapshot unavailable",err);
-  list.innerHTML='<div class="notice"><b>'+esc(lang==="ar"?"الموجز غير متاح حالياً":"Feed temporarily unavailable")+'</b><span>'+esc(lang==="ar"?"راجع التحذيرات مباشرة من موقع CISA الرسمي.":"Review advisories directly on the official CISA website.")+'</span><a href="https://www.cisa.gov/news-events/cybersecurity-advisories" target="_blank" rel="noopener noreferrer">CISA Cybersecurity Advisories ↗</a></div>';
-  state.textContent=lang==="ar"?"غير متاح":"Unavailable";
- }
+  const res=await fetch("./data/global-threats.json?ts="+Date.now(),{cache:"no-store"});if(!res.ok)throw new Error("HTTP "+res.status);
+  const payload=await res.json();if(!Array.isArray(payload.items)||!payload.items.length)throw new Error("Empty advisory snapshot");
+  globalAdvisoryItems=payload.items.slice(0,30);renderThreatStats(globalAdvisoryItems);renderThreatList();initSourceCoverageMap();
+  state.textContent=lang==="ar"?"متصل":"Connected";updated.textContent=payload.generatedAt?new Date(payload.generatedAt).toLocaleString(lang==="ar"?"ar-IQ":"en-US"):"";
+  const ids=globalAdvisoryItems.map(x=>x.url||x.title),previous=JSON.parse(localStorage.getItem("msa-known-advisories")||"null");
+  if(previous&&checkNew&&localStorage.getItem("msa-alerts-enabled")==="1"&&"Notification" in window&&Notification.permission==="granted"){
+   globalAdvisoryItems.filter(x=>!previous.includes(x.url||x.title)).map(item=>({item,intel:classifyAdvisory(item)})).filter(x=>["critical","high"].includes(x.intel.priorityLevel)).slice(0,3).forEach(({item,intel})=>new Notification(lang==="ar"?"تنبيه تهديد سيبراني جديد":"New cyber threat alert",{body:item.title+" · "+intel.priority+"/100",icon:"./favicon.svg"}));
+  }
+  localStorage.setItem("msa-known-advisories",JSON.stringify(ids));
+ }catch(err){console.warn("CISA advisory snapshot unavailable",err);list.innerHTML='<div class="notice"><b>'+esc(lang==="ar"?"الموجز غير متاح حالياً":"Feed temporarily unavailable")+'</b><span>'+esc(lang==="ar"?"راجع التحذيرات مباشرة من موقع CISA الرسمي.":"Review advisories directly on the official CISA website.")+'</span><a href="https://www.cisa.gov/news-events/cybersecurity-advisories" target="_blank" rel="noopener noreferrer">CISA Cybersecurity Advisories ↗</a></div>';state.textContent=lang==="ar"?"غير متاح":"Unavailable";}
 }
+function initSourceCoverageMap(){
+ const node=$("sourceCoverageMap");if(!node||node.dataset.ready==="1")return;
+ if(!window.L){node.innerHTML='<div class="notice">'+esc(lang==="ar"?"تعذر تحميل مكتبة الخريطة.":"Map library could not be loaded.")+'</div>';return;}
+ node.dataset.ready="1";const map=L.map(node,{scrollWheelZoom:false}).setView([27,42],3);
+ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:9,attribution:"© OpenStreetMap"}).addTo(map);
+ [{coords:[33.3152,44.3661],title:lang==="ar"?"العراق — مصادر وطنية رسمية":"Iraq — national public sources",desc:"NCC Iraq · AMAN"},{coords:[38.9072,-77.0369],title:lang==="ar"?"الولايات المتحدة — مصادر بيانات عامة":"United States — public data sources",desc:"CISA · NVD · MITRE"}].forEach(p=>L.marker(p.coords).addTo(map).bindPopup("<b>"+esc(p.title)+"</b><br>"+esc(p.desc)));
+ setTimeout(()=>map.invalidateSize(),250);
+}
+function exportIntelReport(){
+ const rows=globalAdvisoryItems.map(item=>({item,intel:classifyAdvisory(item)})).sort((a,b)=>b.intel.priority-a.intel.priority).slice(0,15);
+ const title=lang==="ar"?"تقرير الاستخبارات السيبرانية":"Cyber Intelligence Report",date=new Date().toLocaleString(lang==="ar"?"ar-IQ":"en-US");
+ const body=rows.map(({item,intel})=>'<article><h3>'+esc(item.title)+'</h3><p><b>Priority:</b> '+intel.priority+'/100 · '+esc(intel.priorityLevel.toUpperCase())+'</p><p>'+esc(translations[lang][intel.category]||"")+' · CVSS '+(intel.score===null?"—":intel.score.toFixed(1))+'</p><p>'+esc(intel.reasons.join(" · "))+'</p><p>'+esc(String(item.summary||"").slice(0,450))+'</p><p><a href="'+esc(item.url||"#")+'">'+esc(item.url||"")+'</a></p></article>').join("");
+ const w=window.open("","_blank");if(!w){showToast(lang==="ar"?"اسمح بالنوافذ المنبثقة لتصدير التقرير":"Allow pop-ups to export the report");return;}
+ w.document.write('<!doctype html><html lang="'+(lang==="ar"?"ar":"en")+'" dir="'+(lang==="ar"?"rtl":"ltr")+'"><meta charset="utf-8"><title>'+title+'</title><style>body{font:14px Arial,sans-serif;max-width:900px;margin:35px auto;padding:0 20px;color:#172235;line-height:1.7}h1{color:#123b65}article{border:1px solid #ccd5df;border-radius:8px;padding:14px;margin:14px 0;break-inside:avoid}a{color:#175e9d;overflow-wrap:anywhere}</style><h1>'+title+'</h1><p>Mohammed Al-Safi · Cyber Intelligence</p><p>'+esc(date)+'</p><p>'+esc(lang==="ar"?"فرز آلي أولي لمعلومات عامة، ولا يثبت وقوع اختراق.":"Automated triage of public information; does not establish a breach.")+'</p>'+body+'<script>window.onload=function(){window.print()}<\/script></html>');w.document.close();
+}
+$("threatSearch")?.addEventListener("input",renderThreatList);
+$("threatTypeFilter")?.addEventListener("change",renderThreatList);
+$("threatSortBtn")?.addEventListener("click",()=>{threatSortHigh=!threatSortHigh;$("threatSortBtn").textContent=lang==="ar"?(threatSortHigh?"الأولوية الأعلى":"الأولوية الأقل"):(threatSortHigh?"Highest priority":"Lowest priority");renderThreatList();});
+$("threatReportBtn")?.addEventListener("click",exportIntelReport);
+$("threatNotifyBtn")?.addEventListener("click",async()=>{
+ if(!("Notification" in window)){showToast(lang==="ar"?"متصفحك لا يدعم التنبيهات":"This browser does not support notifications");return;}
+ const permission=await Notification.requestPermission();
+ if(permission==="granted"){localStorage.setItem("msa-alerts-enabled","1");localStorage.setItem("msa-known-advisories",JSON.stringify(globalAdvisoryItems.map(x=>x.url||x.title)));$("threatNotifyBtn").textContent=lang==="ar"?"التنبيهات مفعّلة":"Alerts enabled";showToast(lang==="ar"?"التنبيهات تعمل أثناء فتح الموقع":"Alerts work while the site is open");}
+ else showToast(lang==="ar"?"لم يتم منح إذن التنبيهات":"Notification permission was not granted");
+});
+setInterval(()=>{if(localStorage.getItem("msa-alerts-enabled")==="1")loadGlobalThreats(true);},15*60*1000);
 $("cveQuickOpen").addEventListener("click",()=>{
  const id=$("cveQuickSearch").value.trim().toUpperCase();
  if(/^CVE-\d{4}-\d{4,}$/.test(id))showCveDetails(id);

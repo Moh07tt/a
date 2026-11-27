@@ -424,7 +424,7 @@ function renderIraqAdvisories(){
  list.innerHTML=rows.map(({item,intel})=>{
   const badge=intel.level==="critical"?"حرج / Critical":intel.level==="high"?"مرتفع / High":"إشعار / Advisory";
   const cves=intel.cves.map(id=>'<a href="https://nvd.nist.gov/vuln/detail/'+encodeURIComponent(id)+'" target="_blank" rel="noopener noreferrer">'+esc(id)+'</a>').join("");
-  const url=/^https:\\/\\//.test(item.url||"")?item.url:"https://ncc.gov.iq/advisories.html";
+  const url=String(item.url||"").startsWith("https://")?item.url:"https://ncc.gov.iq/advisories.html";
   return '<article class="iraq-advisory-card"><div class="iraq-advisory-meta"><span class="iraq-level iraq-'+intel.level+'">'+esc(badge)+'</span><time>'+esc(item.date||"التاريخ غير محدد / Date unavailable")+'</time></div><b>'+esc(item.title)+'</b>'+(cves?'<div class="iraq-cves">'+cves+'</div>':"")+'<a class="iraq-read-link" href="'+esc(url)+'" target="_blank" rel="noopener noreferrer">قراءة الإشعار الأصلي / Read official notice ↗</a></article>';
  }).join("");
 }

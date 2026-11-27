@@ -154,6 +154,32 @@
   <script src="assets/app.js?v=33"></script>
 <script>
 (function(){
+ const tabs=["overview","vulnerabilities","alerts","sources","iraq-watch","methodology","global-threats","ioc-lab","cve-intelligence"];
+ function activate(id){
+  if(!tabs.includes(id))id="overview";
+  document.body.setAttribute("data-active-tab",id);
+  document.querySelectorAll(".section-tab[data-tab]").forEach(b=>{
+   const on=b.dataset.tab===id;b.classList.toggle("active",on);b.setAttribute("aria-selected",String(on));
+  });
+  document.querySelectorAll(".tab-panel[data-tab-panel]").forEach(p=>{
+   const on=p.dataset.tabPanel===id;
+   p.classList.toggle("active",on);p.hidden=!on;p.setAttribute("aria-hidden",String(!on));
+  });
+ }
+ document.addEventListener("click",e=>{
+  const b=e.target.closest("[data-tab]");
+  if(!b)return;
+  const id=b.dataset.tab;if(!tabs.includes(id))return;
+  e.preventDefault();e.stopImmediatePropagation();activate(id);
+  history.replaceState(null,"","#"+id);
+ },true);
+ function init(){activate((location.hash||"").slice(1)||"overview");}
+ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init,{once:true});else init();
+ window.addEventListener("hashchange",init);
+})();
+</script>
+<script>
+(function(){
  const allowed=["overview","vulnerabilities","alerts","global-threats","cve-intelligence","ioc-lab","sources","iraq-watch","methodology"];
  function show(name,scroll){
   const active=allowed.includes(name)?name:"overview";

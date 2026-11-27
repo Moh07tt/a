@@ -65,3 +65,8 @@ Issues, corrections, documentation improvements, and pull requests are welcome. 
 ## License | الرخصة
 
 The original source code in this repository is released under the MIT License. See [LICENSE](LICENSE). Third-party data, trademarks, images, and other upstream materials remain subject to their respective owners' terms.
+
+
+## Iraq official advisory snapshot | موجز الإشعارات العراقية
+
+A GitHub Actions workflow checks the official NCC Iraq advisories page every six hours and publishes `data/iraq-watch.json`. The collector records public advisory titles and their linked official PDFs when the source page exposes them. Priority labels in the dashboard are title-keyword triage indicators, not official severity ratings. If the source page cannot be fetched, the workflow preserves the last-known snapshot. These records are published advisories, not proof of an incident or compromise inside Iraq.

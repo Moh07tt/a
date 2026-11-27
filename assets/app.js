@@ -86,7 +86,7 @@ function updateStats(items){
 }
 async function loadKev(){
   $("feedStatus").textContent="● Connecting";
-  $("kevTable").innerHTML=`<tr><td colspan="5" class="loading-cell"><span class="spinner"></span>${t("loadingIntel")}</td></tr>`;
+  $("kevTable").innerHTML=`<tr><td colspan="7" class="loading-cell"><span class="spinner"></span>${t("loadingIntel")}</td></tr>`;
   let data = null;
   let activeSource = null;
   const failures = [];
@@ -121,7 +121,7 @@ async function loadKev(){
     console.error(err);
     $("feedStatus").textContent="● Unavailable";
     $("cisaState").innerHTML=`<i class="muted-dot"></i><span>${t("cisaFailed")}</span>`;
-    $("kevTable").innerHTML=`<tr><td colspan="5" class="loading-cell">${t("failed")}</td></tr>`;
+    $("kevTable").innerHTML=`<tr><td colspan="7" class="loading-cell">${t("failed")}</td></tr>`;
     $("lastUpdated").textContent=t("failed");
     showToast(t("failed"));
   }

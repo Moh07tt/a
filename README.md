@@ -86,3 +86,8 @@ The overview includes three compact panels: the five highest-scored CISA advisor
 ## Threat analysis, remediation and saved intelligence | تحليل التهديدات والحفظ
 
 CVE detail views include general remediation guidance derived from NVD severity, description and weakness terms. Guidance directs operators to vendor advisories for exact affected/fixed versions and does not invent patch versions. Visitors can save CISA advisories and CVE identifiers to a browser-local watchlist (up to 100 entries), remove saved items, and view the list on the overview page. Saved items are per browser/device and are not synced to an account.
+
+
+## Analyst workspace | مساحة عمل المحلل
+
+The overview includes a browser-local analyst workspace showing saved CVE/threat counts and last successful load times for CISA KEV, CISA advisories, and the NCC Iraq snapshot. A refresh control reloads the public feeds. Status and timestamps are local browser observations and do not guarantee that an upstream publisher has issued new content. This is a static public site and does not provide authenticated accounts or cross-device synchronization; secure accounts require a separate backend and privacy/security configuration.
